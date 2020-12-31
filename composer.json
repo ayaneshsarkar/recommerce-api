@@ -1,0 +1,19 @@
+{
+    "name": "ayanesh/reactphp",
+    "description": "This is a PHP React REST API",
+    "authors": [
+        {
+            "name": "Ayanesh Sarkar",
+            "email": "ayaneshofficial@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.2",
+        "firebase/php-jwt": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "./app"
+        }
+    }
+}
