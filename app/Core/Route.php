@@ -39,6 +39,11 @@
             $method = $_SERVER['REQUEST_METHOD'];
             $url = $_SERVER['PATH_INFO'] ?? '/';
 
+            
+            if($url !== '/' && substr($url , -1) === '/') {
+                $url = rtrim($url, '/');
+            }
+
             if($method === 'GET') {
                 $callback = $this->getRoutes[$url] ?? NULL;
             } else {
