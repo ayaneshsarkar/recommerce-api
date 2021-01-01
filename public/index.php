@@ -2,9 +2,11 @@
 
     require_once __DIR__ . '/../vendor/autoload.php';
 
+    use Dotenv\Dotenv;
     use App\Core\Route;
     use App\Controllers\BooksController;
-    use Dotenv\Dotenv;
+    use App\Controllers\CategoriesController;
+    use App\Controllers\UsersController;
     
     $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
@@ -13,7 +15,7 @@
     $route = new Route();
 
     $route->get('/get-books', [BooksController::class, 'getBooks']);
+    $route->get('/get-categories', [CategoriesController::class, 'getCategories']);
+    $route->get('/get-users', [UsersController::class, 'getUsers']);
 
     $route->resolve();
-
-

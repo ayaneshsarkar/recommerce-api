@@ -2,28 +2,26 @@
 
     /**
      * User: Ayanesh Sarkar
-     * Date: 31/12/2020
+     * Date: 01/01/2021
      */
 
     namespace App\Controllers;
 
     use App\Controllers\Controller;
-    
 
     /**
-     * Class HomeController
+     * Class CategoriesController
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
      * @package App
      */
+    class CategoriesController extends Controller {
 
-    class BooksController extends Controller {
-
-        public function getBooks()
+        public function getCategories()
         {
             header('Access-Control-Allow-Origin: *');
             header('Content-Type: application/json');
 
-            return json_encode($this->book->get());
+            return json_encode($this->category->get());
         }
 
     }

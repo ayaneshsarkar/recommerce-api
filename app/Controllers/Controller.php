@@ -10,6 +10,8 @@
     use App\Core\Database;
     use PDO;
     use App\Models\Book;
+    use App\Models\Category;
+    use App\Models\User;
 
     /**
      * Class Controller
@@ -23,6 +25,8 @@
 
         // Model Declares
         public Book $book;
+        public Category $category;
+        public User $user;
 
         public function __construct()
         {
@@ -32,6 +36,8 @@
 
             // Models
             $this->book = new Book();
+            $this->category = new Category();
+            $this->user = new User();
         }
 
     }

@@ -6,10 +6,7 @@
      */
 
     namespace App\Models;
-
-    use App\Core\Database;
-
-/**
+    /**
      * Class Book
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
      * @package App
