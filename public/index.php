@@ -15,6 +15,8 @@
     $route = new Route();
 
     $route->get('/get-books', [BooksController::class, 'getBooks']);
+    $route->get('/get-book', [BooksController::class, 'getBook']);
+    $route->post('/get-book', [BooksController::class, 'getBook']);
     $route->get('/get-categories', [CategoriesController::class, 'getCategories']);
     $route->get('/get-users', [UsersController::class, 'getUsers']);
 

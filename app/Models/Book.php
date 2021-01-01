@@ -18,10 +18,26 @@
             $query = "SELECT books.*, categories.name AS category FROM books
                     JOIN categories ON books.category_id = categories.id 
                     ORDER BY books.created_at DESC";
-            $statement = $this->db->query($query);
-            $books = $statement->fetchAll();
-
+            $books = $this->db->query($query)->fetchAll();
             return $books;
+        }
+
+        public function first(int $id)
+        {
+            if($id) {
+                $query = "SELECT books.*, categories.name AS category FROM books
+                    JOIN categories ON books.category_id = categories.id
+                    WHERE books.id = :id
+                    ORDER BY books.created_at DESC";
+                $statement = $this->db->prepare($query);
+                $statement->execute([ 'id' => $id ]);
+                $book = $statement->fetch();
+
+                return $book;
+            } else {
+                return NULL;
+            }
+            
         }
 
     }

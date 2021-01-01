@@ -29,7 +29,7 @@
             $this->getRoutes[$url] = $callback;
         }
 
-        public function postRoutes($url, $callback)
+        public function post($url, $callback)
         {
             $this->postRoutes[$url] = $callback;
         }
