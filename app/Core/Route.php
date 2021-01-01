@@ -38,7 +38,19 @@
         {
             $method = $_SERVER['REQUEST_METHOD'];
             $url = $_SERVER['PATH_INFO'] ?? '/';
+            $params = [];
 
+            if($url !== '/' && $method === 'GET') {
+                $urlArr = explode('/', $url);
+                $url = '/' . $urlArr[1];
+                $paramArr = array_slice($urlArr, 2);
+                
+                foreach($paramArr as $value) {
+                    array_push($params, $value);
+                }
+            }
+
+            // var_dump($params);
             
             if($url !== '/' && substr($url , -1) === '/') {
                 $url = rtrim($url, '/');
