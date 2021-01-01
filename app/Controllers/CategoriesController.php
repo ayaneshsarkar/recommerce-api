@@ -8,6 +8,7 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
+    use App\Core\Validator;
 
     /**
      * Class CategoriesController
@@ -25,6 +26,47 @@
         {
             $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
             return json_encode($this->category->first($id));
+        }
+
+        public function storeCategory()
+        {
+            $data = json_decode(file_get_contents('php://input'));
+
+            Validator::isString($data->name, 'name', true);
+
+            $errors = Validator::validate();
+
+            if(empty($errors)) {
+                $this->category->create($data);
+                return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
+            } else {
+                return json_encode([ 'status' => FALSE, 'errors' => $errors ]);
+            }
+        }
+
+        public function updateCategory()
+        {
+            $data = json_decode(file_get_contents('php://input'));
+
+            Validator::isInt($data->id, 'id', true);
+            Validator::isString($data->name, 'name', true);
+
+            $errors = Validator::validate();
+
+            if(empty($errors)) {
+                $this->category->update($data);
+                return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
+            } else {
+                return json_encode([ 'status' => FALSE, 'errors' => $errors ]);
+            }
+        }
+
+        public function deleteCategory()
+        {
+            $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
+            $this->category->delete($id);
+
+            return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
         }
 
     }

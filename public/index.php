@@ -12,8 +12,9 @@
     use App\Controllers\BooksController;
     use App\Controllers\CategoriesController;
     use App\Controllers\UsersController;
-    
-    $env = Dotenv::createImmutable(dirname(__DIR__));
+use App\Models\Category;
+
+$env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
 
     // dirname($_SERVER['DOCUMENT_ROOT'])
@@ -32,6 +33,10 @@
     $route->get('/get-categories', [CategoriesController::class, 'getCategories']);
     $route->get('/get-category', [CategoriesController::class, 'getCategory']);
     $route->post('/get-category', [CategoriesController::class, 'getCategory']);
+    $route->post('/create-category', [CategoriesController::class, 'storeCategory']);
+    $route->put('/edit-category', [CategoriesController::class, 'updateCategory']);
+    $route->get('/delete-category', [CategoriesController::class, 'deleteCategory']);
+    $route->delete('/delete-category', [CategoriesController::class, 'deleteCategory']);
     
     // Users
     $route->get('/get-users', [UsersController::class, 'getUsers']);
