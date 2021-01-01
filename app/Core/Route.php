@@ -16,6 +16,8 @@
 
         public array $getRoutes = [];
         public array $postRoutes = [];
+        public array $deleteRoutes = [];
+        public array $putRoutes = [];
         public string $APPPATH;
 
         public function __construct()
@@ -34,6 +36,16 @@
             $this->postRoutes[$url] = $callback;
         }
 
+        public function put($url, $callback)
+        {
+            $this->putRoutes[$url] = $callback;
+        }
+        
+        public function delete($url, $callback)
+        {
+            $this->deleteRoutes[$url] = $callback;
+        }
+
         public function resolve()
         {
             $method = $_SERVER['REQUEST_METHOD'];
@@ -45,6 +57,10 @@
 
             if($method === 'GET') {
                 $callback = $this->getRoutes[$url] ?? NULL;
+            } else if($method === "DELETE") {
+                $callback = $this->deleteRoutes[$url] ?? NULL;
+            } else if($method === "PUT") {
+                $callback = $this->putRoutes[$url] ?? NULL;
             } else {
                 $callback = $this->postRoutes[$url] ?? NULL;
             }

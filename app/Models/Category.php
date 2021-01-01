@@ -25,4 +25,18 @@
             return $categories;
         }
 
+        public function first(?int $id)
+        {
+            if($id) {
+                $query = "SELECT * FROM categories WHERE id = :id ORDER BY created_at DESC";
+                $statement = $this->db->prepare($query);
+                $statement->execute(['id' => $id]);
+                $category = $statement->fetch();
+
+                return $category;
+            } else {
+                return NULL;
+            }
+        }
+
     }

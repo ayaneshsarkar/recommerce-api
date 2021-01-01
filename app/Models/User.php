@@ -23,4 +23,17 @@
             return $users;
         }
 
+        public function first(?int $id) {
+            if($id) {
+                $query = "SELECT * FROM users WHERE id = :id ORDER BY created_at DESC";
+                $statement = $this->db->prepare($query);
+                $statement->execute(['id' => $id]);
+                $user = $statement->fetch();
+
+                return $user;
+            } else {
+                return NULL;
+            }
+        }
+
     }

@@ -18,10 +18,13 @@
 
         public function getCategories()
         {
-            header('Access-Control-Allow-Origin: *');
-            header('Content-Type: application/json');
-
             return json_encode($this->category->get());
+        }
+
+        public function getCategory()
+        {
+            $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
+            return json_encode($this->category->first($id));
         }
 
     }

@@ -18,10 +18,13 @@
 
         public function getUsers()
         {
-            header('Access-Control-Allow-Origin: *');
-            header('Content-Type: application/json');
-
             return json_encode($this->user->get());
+        }
+
+        public function getUser()
+        {
+            $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
+            return json_encode($this->user->first($id));
         }
 
     }

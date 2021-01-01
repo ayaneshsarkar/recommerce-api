@@ -1,5 +1,10 @@
 <?php 
 
+    header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
+
     require_once __DIR__ . '/../vendor/autoload.php';
 
     use Dotenv\Dotenv;
@@ -14,10 +19,23 @@
     // dirname($_SERVER['DOCUMENT_ROOT'])
     $route = new Route();
 
+    // Books
     $route->get('/get-books', [BooksController::class, 'getBooks']);
     $route->get('/get-book', [BooksController::class, 'getBook']);
     $route->post('/get-book', [BooksController::class, 'getBook']);
+    $route->post('/create-book', [BooksController::class, 'storeBook']);
+    $route->put('/edit-book', [BooksController::class, 'updateBook']);
+    $route->get('/delete-book', [BooksController::class, 'deleteBook']);
+    $route->delete('/delete-book', [BooksController::class, 'deleteBook']);
+
+    // Categories
     $route->get('/get-categories', [CategoriesController::class, 'getCategories']);
+    $route->get('/get-category', [CategoriesController::class, 'getCategory']);
+    $route->post('/get-category', [CategoriesController::class, 'getCategory']);
+    
+    // Users
     $route->get('/get-users', [UsersController::class, 'getUsers']);
+    $route->get('/get-user', [UsersController::class, 'getUser']);
+    $route->post('/get-user', [UsersController::class, 'getUser']);
 
     $route->resolve();
