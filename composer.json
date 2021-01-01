@@ -9,8 +9,7 @@
     ],
     "require": {
         "vlucas/phpdotenv": "^5.2",
-        "firebase/php-jwt": "^5.2",
-        "klein/klein": "^2.1"
+        "firebase/php-jwt": "^5.2"
     },
     "autoload": {
         "psr-4": {
