@@ -54,7 +54,7 @@
                 self::$errors[$key] = "The $key is required.";
             } 
             
-            if(!empty($value) && !filter_var($value, FILTER_SANITIZE_EMAIL)) {
+            if(!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 self::$errors[$key] = "The $key has to be a valid email.";
             }
         }
@@ -73,7 +73,7 @@
 
             if($req && empty($value)) {
                 self::$errors[$key] = "The $key is required.";
-            } else if(!filter_var($value, FILTER_SANITIZE_NUMBER_INT)) {
+            } else if(!filter_var($value, FILTER_VALIDATE_INT)) {
                 self::$errors[$key] = "The $key has to be a number.";
             }
 
@@ -91,7 +91,7 @@
         {
             $key = strtolower($key);
 
-            if(!filter_var($value, FILTER_SANITIZE_NUMBER_INT) && !empty($value)) {
+            if(!filter_var($value, FILTER_VALIDATE_INT) && !empty($value)) {
                 self::$errors[$key] = "The $key has to be a number.";
             }
         }

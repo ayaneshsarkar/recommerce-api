@@ -13,6 +13,7 @@
     use App\Controllers\CategoriesController;
     use App\Controllers\UsersController;
 use App\Models\Category;
+use App\Models\User;
 
 $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
@@ -42,5 +43,10 @@ $env = Dotenv::createImmutable(dirname(__DIR__));
     $route->get('/get-users', [UsersController::class, 'getUsers']);
     $route->get('/get-user', [UsersController::class, 'getUser']);
     $route->post('/get-user', [UsersController::class, 'getUser']);
+    $route->post('/register-user', [UsersController::class, 'register']);
+    $route->put('/edit-user', [UsersController::class, 'updateUser']);
+    $route->get('/delete-user', [UsersController::class, 'deleteUser']);
+    $route->delete('/delete-user', [UsersController::class, 'deleteUser']);
+
 
     $route->resolve();
