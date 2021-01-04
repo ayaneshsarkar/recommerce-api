@@ -8,6 +8,8 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
+    use App\Core\Request;
+    use App\Core\Response;
     use App\Core\Validator;
     
 
@@ -24,10 +26,10 @@
             return json_encode($this->book->get());
         }
 
-        public function getBook()
+        public function getBook(Request $request, Response $response)
         {
-            $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
-            return json_encode($this->book->first($id));
+            $id = $request->getBody()->id ?? NULL;
+            return $response->json($this->book->first((int)$id));
         }
 
         public function storeBook()

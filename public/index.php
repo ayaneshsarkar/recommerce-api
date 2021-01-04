@@ -8,18 +8,17 @@
     require_once __DIR__ . '/../vendor/autoload.php';
 
     use Dotenv\Dotenv;
-    use App\Core\Route;
+    use App\Core\Application;
     use App\Controllers\BooksController;
     use App\Controllers\CategoriesController;
     use App\Controllers\UsersController;
-use App\Models\Category;
-use App\Models\User;
+    use App\Controllers\AuthController;
 
-$env = Dotenv::createImmutable(dirname(__DIR__));
+    $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
 
-    // dirname($_SERVER['DOCUMENT_ROOT'])
-    $route = new Route();
+    $app = new Application(dirname($_SERVER['DOCUMENT_ROOT']));
+    $route = $app->route;
 
     // Books
     $route->get('/get-books', [BooksController::class, 'getBooks']);
@@ -48,5 +47,11 @@ $env = Dotenv::createImmutable(dirname(__DIR__));
     $route->get('/delete-user', [UsersController::class, 'deleteUser']);
     $route->delete('/delete-user', [UsersController::class, 'deleteUser']);
 
+    // Auth
+    $route->post('/login', [AuthController::class, 'login']);
 
-    $route->resolve();
+
+
+
+    
+    $app->run();

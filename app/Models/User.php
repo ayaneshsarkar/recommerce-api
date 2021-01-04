@@ -16,6 +16,15 @@
      */
     class User extends Model {
 
+        protected function getUser(object $data)
+        {
+            $query = "SELECT * FROM users WHERE email = :email";
+            $statement = $this->db->prepare($query);
+            $statement->execute([ 'email' => $data->email ]);
+
+            return $statement->fetch();
+        }
+
         public function get() {
             $query = "SELECT * FROM users ORDER BY created_at DESC";
             $users = $this->db->query($query)->fetchAll();
@@ -97,6 +106,17 @@
                 $query = "DELETE FROM users WHERE id = :id";
                 $this->db->prepare($query)->execute([ 'id' => $id ]);
             }
+        }
+
+        public function authenticate(object $data): bool
+        {
+            $user = $this->getUser($data);
+
+            if(empty($user)) {
+                return false;
+            }
+
+            return password_verify($data->password, $user->password);
         }
 
     }

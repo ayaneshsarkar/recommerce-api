@@ -8,6 +8,7 @@
     namespace App\Controllers;
 
     use App\Core\Database;
+    use App\Middlewares\Middleware;
     use PDO;
     use App\Models\Book;
     use App\Models\Category;
@@ -22,6 +23,10 @@
 
         public Database $Database;
         public \PDO $db;
+
+        // Middleware Process
+        public string $action = '';
+        public array $middlewares = [];
 
         // Model Declares
         public Book $book;
@@ -38,6 +43,16 @@
             $this->book = new Book();
             $this->category = new Category();
             $this->user = new User();
+        }
+
+        public function registerMiddlewares(Middleware $middleware)
+        {
+            $this->middlewares[] = $middleware;
+        }
+
+        public function getMiddlewares(): array
+        {
+            return $this->middlewares;
         }
 
     }

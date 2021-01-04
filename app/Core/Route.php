@@ -7,6 +7,10 @@
 
     namespace App\Core;
 
+    use App\Core\Application;
+    use App\Core\Request;
+    use App\Core\Response;
+
     /**
      * Class Route
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
@@ -14,14 +18,19 @@
      */
     class Route {
 
+        public Request $request;
+        public Response $response;
+
         public array $getRoutes = [];
         public array $postRoutes = [];
         public array $deleteRoutes = [];
         public array $putRoutes = [];
         public string $APPPATH;
 
-        public function __construct()
+        public function __construct(Request $request, Response $response)
         {
+            $this->request = $request;
+            $this->response = $response;
             $this->APPPATH = dirname($_SERVER['DOCUMENT_ROOT']);
         }
 
@@ -48,7 +57,7 @@
 
         public function resolve()
         {
-            $method = $_SERVER['REQUEST_METHOD'];
+            $method = $this->request->getMethod();
             $url = $_SERVER['PATH_INFO'] ?? '/';
 
             if($url !== '/' && substr($url , -1) === '/') {
@@ -71,10 +80,12 @@
             }
 
             if(is_array($callback)) {
-                $callback[0] = new $callback[0]();
+                $controller = new $callback[0]();
+                Application::$APP->controller = $controller;
+                $callback[0] = $controller;
             }
 
-            echo call_user_func($callback, $this);
+            return call_user_func($callback, $this->request, $this->response);
         }
 
         /**
