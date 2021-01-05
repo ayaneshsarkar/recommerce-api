@@ -24,7 +24,7 @@
         public string $dbName;
         public string $pdoDSN;
         public string $dbType;
-        // public static ?Database $DB = NULL;
+        public static $DB = NULL;
         
         public function __construct()
         {
@@ -44,7 +44,32 @@
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-            //self::$PDO = $this->pdo;
+            self::$DB = $this;
+        }
+
+        public function first($table, $placeholder, $value)
+        {
+            $query = "SELECT * FROM $table WHERE $placeholder = :$placeholder";
+            $statement = $this->pdo->prepare($query);
+            $statement->execute([ $placeholder => $value ]);
+
+            return $statement->fetch();
+        }
+
+        public function set($table, $placeholder, $value, array $data): bool
+        {
+            $setArr = array_map(fn($key) => "$key = :$key", array_keys($data));
+            $setArr = implode('', $setArr);
+            $query = "UPDATE $table SET $setArr WHERE $placeholder = :$placeholder";
+
+            $executeArr = [];
+            $executeArr[$placeholder] = $value;
+
+            foreach($data as $key => $value) {
+                $executeArr[$key] = $value;
+            }
+
+            return $this->pdo->prepare($query)->execute($executeArr);
         }
 
     }

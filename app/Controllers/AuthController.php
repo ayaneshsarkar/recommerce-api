@@ -8,9 +8,12 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
+    use App\Core\Application;
     use App\Core\Request;
     use App\Core\Response;
     use App\Core\Validator;
+    use App\Core\Cookie;
+    use Firebase\JWT\JWT;
 
     /**
      * Class AuthController
@@ -33,13 +36,28 @@
             $errors = Validator::validate();
 
             if(empty($errors)) {
-                $auth = $this->user->authenticate($data);
+                $authProcess = $this->user->authenticate($data);
+                $auth = $authProcess->auth;
 
                 if($auth === TRUE) {
+                    $user = $authProcess->user;
+
+                    $payload = [
+                        "iss" => $_ENV['BASE_URL'],
+                        "aud" => $_ENV['BASE_URL'],
+                        "iat" => time(),
+                        "nbf" => time(),
+                        "exp" => time() + 3600,
+                        "user_id" => $user->id
+                    ];
+
+                    $accessToken = Application::login($user, $payload);
+
                     return $response->json([
                         'status' => TRUE,
                         'errors' => NULL,
-                        'message' => 'Logged In!'
+                        'message' => 'Logged In!',
+                        'token' => Cookie::get('access_token')
                     ]);
                 } else {
                     return $response->json([
@@ -52,6 +70,17 @@
             }
 
 
+        }
+
+        public function test()
+        {
+            $data = [
+                'token' => 'cfmdsxzvjfxsg'
+            ];
+
+            $setArr = array_map(fn($key) => "$key = :$key", array_keys($data));
+
+            var_dump(implode('', $setArr));
         }
 
     }

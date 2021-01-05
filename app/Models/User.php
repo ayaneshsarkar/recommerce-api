@@ -16,7 +16,7 @@
      */
     class User extends Model {
 
-        protected function getUser(object $data)
+        public function getUser(object $data)
         {
             $query = "SELECT * FROM users WHERE email = :email";
             $statement = $this->db->prepare($query);
@@ -108,15 +108,17 @@
             }
         }
 
-        public function authenticate(object $data): bool
+        public function authenticate(object $data): object
         {
             $user = $this->getUser($data);
 
             if(empty($user)) {
-                return false;
+                return (object)[ 'auth' => FALSE, 'user' => NULL ];
             }
 
-            return password_verify($data->password, $user->password);
+            $verification = password_verify($data->password, $user->password);
+
+            return (object)['auth' => TRUE, 'user' => $user];
         }
 
     }

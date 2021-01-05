@@ -3,7 +3,9 @@
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With', 'Set-Cookie');
+
+    //session_start();
 
     require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -49,7 +51,7 @@
 
     // Auth
     $route->post('/login', [AuthController::class, 'login']);
-
+    $route->get('/test', [AuthController::class, 'test']);
 
 
 
