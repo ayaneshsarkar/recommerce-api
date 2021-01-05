@@ -47,7 +47,12 @@
             $dataArr = json_decode(file_get_contents('php://input')) ?? $_GET ?? $_POST;
 
             foreach($dataArr as $key => $value) {
-                $data[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                if(is_int($value)) {
+                    $data[$key] = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+                } else {
+                    $data[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+                
             }
             
             return (object)$data;

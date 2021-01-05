@@ -73,7 +73,7 @@
 
             if($req && empty($value)) {
                 self::$errors[$key] = "The $key is required.";
-            } else if(!filter_var($value, FILTER_VALIDATE_INT)) {
+            } else if(!filter_var($value, FILTER_VALIDATE_INT) && !empty($value)) {
                 self::$errors[$key] = "The $key has to be a number.";
             }
 

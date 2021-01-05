@@ -16,78 +16,77 @@
     /**
      * Class HomeController
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
-     * @package App
+     * @package App\Controllers
      */
-
     class BooksController extends Controller {
 
-        public function getBooks()
+        public function getBooks(Request $request, Response $response)
         {
-            return json_encode($this->book->get());
+            return $response->json($this->book->get());
         }
 
         public function getBook(Request $request, Response $response)
         {
             $id = $request->getBody()->id ?? NULL;
-            return $response->json($this->book->first((int)$id));
+            return $response->json($this->book->first($id));
         }
 
-        public function storeBook()
+        public function storeBook(Request $request, Response $response)
         {
-            $data = json_decode(file_get_contents('php://input'));
-            Validator::isInt($data->category_id, 'category', true);
-            Validator::isString($data->title, 'title', true);
-            Validator::isString($data->description, 'description', true);
-            Validator::isString($data->author, 'author', true);
-            Validator::isString($data->bookurl, 'bookURL', true);
-            Validator::isOnlyInt($data->hardcover_price, 'hardcover price', false);
-            Validator::isOnlyInt($data->paperback_price, 'paperback price', false);
-            Validator::isOnlyInt($data->online_price, 'hardcover price', false);
-            Validator::isString($data->publish_date, 'publish date', true);
+            $data = $request->getBody();
+            Validator::isInt($data->category_id ?? NULL, 'category', true);
+            Validator::isString($data->title ?? NULL, 'title', true);
+            Validator::isString($data->description ?? NULL, 'description', true);
+            Validator::isString($data->author ?? NULL, 'author', true);
+            Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
+            Validator::isOnlyInt($data->hardcover_price ?? NULL, 'hardcover price', false);
+            Validator::isOnlyInt($data->paperback_price ?? NULL, 'paperback price', false);
+            Validator::isOnlyInt($data->online_price ?? NULL, 'hardcover price', false);
+            Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
             $errors = Validator::validate();
             
             if(empty($errors)) {
                 $this->book->create($data);
-                return json_encode( [ 'status' => TRUE, 'errors' => NULL ] );
+                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
             } else {
-                return json_encode([ 'status' => FALSE, 'errors' => $errors ]);
+                return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             }
 
         }
 
-        public function updateBook()
+        public function updateBook(Request $request, Response $response)
         {
-            $data = json_decode(file_get_contents('php://input'));
+            $data = $request->getBody();
 
-            Validator::isInt($data->id, 'id', true);
-            Validator::isInt($data->category_id, 'category', true);
-            Validator::isString($data->title, 'title', true);
-            Validator::isString($data->description, 'description', true);
-            Validator::isString($data->author, 'author', true);
-            Validator::isString($data->bookurl, 'bookURL', true);
-            Validator::isOnlyInt($data->hardcover_price, 'hardcover price', false);
-            Validator::isOnlyInt($data->paperback_price, 'paperback price', false);
-            Validator::isOnlyInt($data->online_price, 'hardcover price', false);
-            Validator::isString($data->publish_date, 'publish date', true);
+            Validator::isInt($data->id ?? NULL, 'id', true);
+            Validator::isInt($data->category_id ?? NULL, 'category', true);
+            Validator::isString($data->title ?? NULL, 'title', true);
+            Validator::isString($data->description ?? NULL, 'description', true);
+            Validator::isString($data->author ?? NULL, 'author', true);
+            Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
+            Validator::isOnlyInt($data->hardcover_price ?? NULL, 'hardcover price', false);
+            Validator::isOnlyInt($data->paperback_price ?? NULL, 'paperback price', false);
+            Validator::isOnlyInt($data->online_price ?? NULL, 'hardcover price', false);
+            Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
             $errors = Validator::validate();
             
             if(empty($errors)) {
                 $this->book->update($data);
-                return json_encode( [ 'status' => TRUE, 'errors' => NULL ] );
+                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
             } else {
-                return json_encode([ 'status' => FALSE, 'errors' => $errors ]);
+                return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             }
 
         }
 
-        public function deleteBook()
+        public function deleteBook(Request $request, Response $response)
         {
-            $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
+            $id = $request->getBody()->id ?? NULL;
             $this->book->delete($id);
 
-            return json_encode( [ 'status' => true, 'errors' => NULL ] );
+            return $response->json([ 'status' => true, 'errors' => NULL ]);
         }
 
     }
