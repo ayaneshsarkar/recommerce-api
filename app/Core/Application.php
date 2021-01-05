@@ -42,10 +42,6 @@
             $this->route = new Route($this->request, $this->response);
             self::$DB = new Database();
             $this->session = new Session();
-            
-            //$this->validate();
-
-            // echo Application::$APP->session->get('access_token') . "\n";
         }
 
         public static function isGuest(): bool
