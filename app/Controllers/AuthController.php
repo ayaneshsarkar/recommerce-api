@@ -11,9 +11,8 @@
     use App\Core\Application;
     use App\Core\Request;
     use App\Core\Response;
+    use App\Core\Session;
     use App\Core\Validator;
-    use App\Core\Cookie;
-    use Firebase\JWT\JWT;
 
     /**
      * Class AuthController
@@ -51,13 +50,13 @@
                         "user_id" => $user->id
                     ];
 
-                    $accessToken = Application::login($user, $payload);
+                    Application::login($user, $payload);
 
                     return $response->json([
                         'status' => TRUE,
                         'errors' => NULL,
                         'message' => 'Logged In!',
-                        'token' => Cookie::get('access_token')
+                        'token' => Session::get('access_token')
                     ]);
                 } else {
                     return $response->json([
@@ -74,13 +73,7 @@
 
         public function test()
         {
-            $data = [
-                'token' => 'cfmdsxzvjfxsg'
-            ];
-
-            $setArr = array_map(fn($key) => "$key = :$key", array_keys($data));
-
-            var_dump(implode('', $setArr));
+            Session::set('name', 'Ayanesh');
         }
 
     }

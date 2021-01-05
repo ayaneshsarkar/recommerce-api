@@ -26,7 +26,7 @@
          */
         public static function set($key, $value, $exp)
         {
-            return setcookie($key, $value, $exp);
+            setcookie($key, $value, $exp);
         }
 
         /**

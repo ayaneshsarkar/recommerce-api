@@ -58,7 +58,7 @@
         public function resolve()
         {
             $method = $this->request->getMethod();
-            $url = $_SERVER['PATH_INFO'] ?? '/';
+            $url = $this->request->getURL() ?? '/';
 
             if($url !== '/' && substr($url , -1) === '/') {
                 $url = rtrim($url, '/');

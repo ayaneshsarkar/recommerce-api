@@ -11,7 +11,7 @@
     use App\Core\Request;
     use App\Core\Response;
     use App\Core\Database;
-    use App\Core\Cookie;
+    use App\Core\Session;
     use App\Controllers\Controller;
     use Firebase\JWT\JWT;
 
@@ -40,12 +40,10 @@
             self::$APP = $this;
             $this->route = new Route($this->request, $this->response);
             self::$DB = new Database();
-
+            
             //$this->validate();
 
-            // echo $this->response->json(Cookie::get('access_token'));
-            
-            // self::logout();
+            var_dump($_SESSION); echo "\n";
         }
 
         public static function isGuest(): bool
@@ -55,53 +53,51 @@
 
         public static function login(object $user, array $payload)
         {
-            $exp = $payload['exp'];
-            $nonExp = time() + (20 * 365 * 24 * 60 * 60);
-
             $accessToken = JWT::encode($payload, $_ENV['SECRET_KEY']);
             unset($payload['exp']);
 
             $refreshToken = JWt::encode($payload, $_ENV['REFRESH_KEY']);
 
-            if(!empty(Cookie::get('access_token'))) {
-                Cookie::remove('access_token');
+            if(!empty(Session::get('access_token'))) {
+                Session::remove('access_token');
             }
 
-            if(!empty(Cookie::get('refresh_token'))) {
-                Cookie::remove('refresh_token');
+            if(!empty(Session::get('refresh_token'))) {
+                Session::remove('refresh_token');
             }
 
-            Cookie::set('access_token', $accessToken, $nonExp);
-            Cookie::set('refresh_token', $refreshToken, $nonExp);
+            Session::set('access_token', $accessToken);
+            Session::set('refresh_token', $refreshToken);
 
             self::$DB->set('users', 'id', $user->id, [ 'token' => $refreshToken ]);
 
             self::$user = $user;
-
-            return $accessToken;
         }
 
         public static function logout()
         {
-            $accessToken = Cookie::get('access_token');
-            $refreshToken = Cookie::get('refresh_token');
+            $accessToken = Session::get('access_token');
+            $refreshToken = Session::get('refresh_token');
 
             if(!empty($accessToken)) {
-                Cookie::remove('access_token');
+                Session::remove('access_token');
             }
 
             if(!empty($refreshToken)) {
-                Cookie::remove('refresh_token');
+                Session::remove('refresh_token');
             }
         }
 
         public function validate()
         {
-            $accessToken = Cookie::get('access_token');
-            $refreshToken = Cookie::get('refresh_token');
+            $accessToken = Session::get('access_token');
+            $refreshToken = Session::get('refresh_token');
 
             if(!empty($refreshToken)) {
-                $userId = JWT::decode($refreshToken, $_ENV['REFRESH_KEY'], ['HS256'])->user_id;
+                $userData = JWT::decode($refreshToken, $_ENV['REFRESH_KEY'], ['HS256']);
+                $userId = $userData->user_id;
+
+                echo $this->response->json((array)$userData);
 
                 self::$user = self::$DB->first('users', 'id', $userId);
 
@@ -116,7 +112,7 @@
                     ];
 
                     $accessToken = JWT::encode($payload, $_ENV['SECRET_KEY']);
-                    Cookie::set('access_token', $accessToken, $payload['exp']);
+                    Session::set('access_token', $accessToken);
                 }
             }
 
