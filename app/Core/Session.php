@@ -13,6 +13,13 @@
      */
     class Session {
 
+        public function __construct()
+        {
+            if(!isset($_SESSION)) {
+                session_start();
+            }
+        }
+
         /**
          * function set
          *
@@ -21,7 +28,7 @@
          *
          * @return void
          */
-        public static function set(string $key, $value)
+        public function set(string $key, $value)
         {
             $_SESSION[$key] = $value;
         }
@@ -33,7 +40,7 @@
          *
          * @return void
          */
-        public static function get(string $key)
+        public function get(string $key)
         {
             return $_SESSION[$key] ?? NULL;
         }
@@ -45,7 +52,7 @@
          *
          * @return void
          */
-        public static function remove(string $key)
+        public function remove(string $key)
         {
             unset($_SESSION[$key]);
         }

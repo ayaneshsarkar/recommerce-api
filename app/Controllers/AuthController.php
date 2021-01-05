@@ -11,7 +11,6 @@
     use App\Core\Application;
     use App\Core\Request;
     use App\Core\Response;
-    use App\Core\Session;
     use App\Core\Validator;
 
     /**
@@ -56,7 +55,7 @@
                         'status' => TRUE,
                         'errors' => NULL,
                         'message' => 'Logged In!',
-                        'token' => Session::get('access_token')
+                        'token' => Application::$APP->session->get('access_token')
                     ]);
                 } else {
                     return $response->json([
@@ -73,7 +72,7 @@
 
         public function test()
         {
-            Session::set('name', 'Ayanesh');
+            Application::$APP->session->set('name', 'Ayanesh');
         }
 
     }

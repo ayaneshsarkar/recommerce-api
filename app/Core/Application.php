@@ -31,6 +31,7 @@
         public static ?object $user = null;
         public static ?Database $DB = null;
         public static ?string $accessToken = null;
+        public Session $session;
 
         public function __construct(string $ROOT_DIR)
         {
@@ -40,10 +41,11 @@
             self::$APP = $this;
             $this->route = new Route($this->request, $this->response);
             self::$DB = new Database();
+            $this->session = new Session();
             
             //$this->validate();
 
-            var_dump($_SESSION); echo "\n";
+            // echo Application::$APP->session->get('access_token') . "\n";
         }
 
         public static function isGuest(): bool
@@ -58,16 +60,16 @@
 
             $refreshToken = JWt::encode($payload, $_ENV['REFRESH_KEY']);
 
-            if(!empty(Session::get('access_token'))) {
-                Session::remove('access_token');
+            if(!empty(Application::$APP->session->get('access_token'))) {
+                Application::$APP->session->remove('access_token');
             }
 
-            if(!empty(Session::get('refresh_token'))) {
-                Session::remove('refresh_token');
+            if(!empty(Application::$APP->session->get('refresh_token'))) {
+                Application::$APP->session->remove('refresh_token');
             }
 
-            Session::set('access_token', $accessToken);
-            Session::set('refresh_token', $refreshToken);
+            Application::$APP->session->set('access_token', $accessToken);
+            Application::$APP->session->set('refresh_token', $refreshToken);
 
             self::$DB->set('users', 'id', $user->id, [ 'token' => $refreshToken ]);
 
@@ -76,22 +78,22 @@
 
         public static function logout()
         {
-            $accessToken = Session::get('access_token');
-            $refreshToken = Session::get('refresh_token');
+            $accessToken = Application::$APP->session->get('access_token');
+            $refreshToken = Application::$APP->session->get('refresh_token');
 
             if(!empty($accessToken)) {
-                Session::remove('access_token');
+                Application::$APP->session->remove('access_token');
             }
 
             if(!empty($refreshToken)) {
-                Session::remove('refresh_token');
+                Application::$APP->session->remove('refresh_token');
             }
         }
 
         public function validate()
         {
-            $accessToken = Session::get('access_token');
-            $refreshToken = Session::get('refresh_token');
+            $accessToken = Application::$APP->session->get('access_token');
+            $refreshToken = Application::$APP->session->get('refresh_token');
 
             if(!empty($refreshToken)) {
                 $userData = JWT::decode($refreshToken, $_ENV['REFRESH_KEY'], ['HS256']);
@@ -112,7 +114,7 @@
                     ];
 
                     $accessToken = JWT::encode($payload, $_ENV['SECRET_KEY']);
-                    Session::set('access_token', $accessToken);
+                    Application::$APP->session->set('access_token', $accessToken);
                 }
             }
 
