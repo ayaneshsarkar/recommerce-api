@@ -5,3 +5,9 @@ Content-Type: application/json
   "email": "ayaneshx@ayaneshdev.xyz",
   "password": "heisenberg"
 }
+
+###
+
+DELETE http://127.0.0.1:8000/logout
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODAwMCIsImF1ZCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwIiwiaWF0IjoxNjA5OTMzMTExLCJuYmYiOjE2MDk5MzMxMTEsImV4cCI6MTYwOTkzMzIzMSwidXNlcl9pZCI6MTZ9.0xYG-yBfkaBjRtQd1pS3sDgEoaDaiAU9tNnGdNfKwBg eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODAwMCIsImF1ZCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwIiwiaWF0IjoxNjA5OTMzMTExLCJuYmYiOjE2MDk5MzMxMTEsInVzZXJfaWQiOjE2fQ.9Nsa4uXoboi3lQnGKrT4U_DoRuEL5JTUwP_a_YLBNIs

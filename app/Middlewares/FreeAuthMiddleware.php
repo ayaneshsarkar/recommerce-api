@@ -1,0 +1,34 @@
+<?php 
+
+    /**
+     * Name: Ayanesh Sarkar
+     * Date: 06/01/2021
+     */
+    namespace App\Middlewares;
+
+    use App\Core\Application;
+    use App\Middlewares\Middleware;
+    use App\Exceptions\ForbiddenException;
+
+    /**
+     * Class FreeAuthMiddleware
+     * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
+     * @package App\Middlewares
+     */
+    class FreeAuthMiddleware extends Middleware {
+
+        protected array $actions = [];
+
+        public function __construct(array $actions = [])
+        {
+            $this->actions = $actions;
+        }
+
+        public function execute()
+        {
+            if(!Application::isGuest()) {
+                throw new ForbiddenException();
+            }
+        }
+
+    }

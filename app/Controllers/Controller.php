@@ -8,11 +8,14 @@
     namespace App\Controllers;
 
     use App\Core\Database;
-    use App\Middlewares\Middleware;
-    use PDO;
     use App\Models\Book;
     use App\Models\Category;
     use App\Models\User;
+    use App\Middlewares\Middleware;
+    use App\Middlewares\AuthMiddleware;
+    use App\Middlewares\TokenMiddleware;
+    use App\Middlewares\AdminMiddleware;
+    use App\Middlewares\FreeAuthMiddleware;
 
     /**
      * Class Controller
@@ -43,9 +46,23 @@
             $this->book = new Book();
             $this->category = new Category();
             $this->user = new User();
+
+            $this->setAllMiddlewares();
         }
 
-        public function registerMiddlewares(Middleware $middleware)
+        protected function setAllMiddlewares()
+        {
+            $this->registerMiddlewares(new TokenMiddleware());
+            //$this->registerMiddlewares(new FreeAuthMiddleware(['register', 'login']));
+            //$this->registerMiddlewares(new AuthMiddleware(['updateUser']));
+            // $this->registerMiddlewares(new AdminMiddleware([
+            //     'storeBook', 'updateBook', 'deleteBook',
+            //     'storeCategory', 'updateCategory', 'deleteCategory',
+            //     'deleteUser'
+            // ]));
+        }
+
+        protected function registerMiddlewares(Middleware $middleware)
         {
             $this->middlewares[] = $middleware;
         }

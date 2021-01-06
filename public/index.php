@@ -51,9 +51,7 @@
 
     // Auth
     $route->post('/login', [AuthController::class, 'login']);
-    $route->get('/test', [AuthController::class, 'test']);
+    $route->delete('/logout', [AuthController::class, 'logout']);
 
 
-
-    
     $app->run();

@@ -13,7 +13,7 @@
     use App\Core\Response;
     use App\Core\Validator;
 
-    /**
+/**
      * Class AuthController
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
      * @package App\Controllers
@@ -45,22 +45,23 @@
                         "aud" => $_ENV['BASE_URL'],
                         "iat" => time(),
                         "nbf" => time(),
-                        "exp" => time() + 3600,
+                        "exp" => time() + 120,
                         "user_id" => $user->id
                     ];
 
-                    Application::login($user, $payload);
+                    $tokens = Application::login($user, $payload);
 
                     return $response->json([
                         'status' => TRUE,
                         'errors' => NULL,
                         'message' => 'Logged In!',
-                        'token' => Application::$APP->session->get('access_token')
+                        'access_token' => $tokens->accessToken,
+                        'refresh_token' => $tokens->refreshToken
                     ]);
                 } else {
                     return $response->json([
                         'status' => FALSE,
-                        'errors' => 'Invalid Credentials'
+                        'errors' => 'Invalid Credentials!'
                     ]);
                 }
             } else {
@@ -70,9 +71,21 @@
 
         }
 
-        public function test()
+        public function logout(Request $request, Response $response)
         {
-            Application::$APP->session->set('name', 'Ayanesh');
+            if(is_null(Application::$APP->user)) {
+                return $response->json([ 'status' => FALSE, 'error' => 'User is not logged in!' ]);
+            } else {
+                $logout = Application::logout();
+
+                if($logout === TRUE) {
+                    return $response->json([ 
+                        'status' => TRUE, 
+                        'errors' => NULL,
+                        'message' => 'Successfully Logged Out!' 
+                    ]);
+                }
+            }
         }
 
     }

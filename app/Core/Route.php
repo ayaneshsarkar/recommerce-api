@@ -10,6 +10,8 @@
     use App\Core\Application;
     use App\Core\Request;
     use App\Core\Response;
+    use App\Controllers\Controller;
+    use App\Middlewares\Middleware;
 
     /**
      * Class Route
@@ -80,8 +82,19 @@
             }
 
             if(is_array($callback)) {
+
+                /**
+                 * @var Controller $controller
+                 */
                 $controller = new $callback[0]();
+                $controller->action = $callback[1];
                 Application::$APP->controller = $controller;
+                $middlewares = $controller->getMiddlewares();
+
+                foreach($middlewares as $middleware) {
+                    $middleware->execute();
+                }
+
                 $callback[0] = $controller;
             }
 
