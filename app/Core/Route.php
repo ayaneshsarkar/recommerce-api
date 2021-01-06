@@ -87,7 +87,7 @@
                  * @var Controller $controller
                  */
                 $controller = new $callback[0]();
-                $controller->action = $callback[1];
+                $controller->action = $url;
                 Application::$APP->controller = $controller;
                 $middlewares = $controller->getMiddlewares();
 

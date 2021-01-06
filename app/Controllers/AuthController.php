@@ -12,6 +12,8 @@
     use App\Core\Request;
     use App\Core\Response;
     use App\Core\Validator;
+    use App\Middlewares\AuthMiddleware;
+    use App\Middlewares\FreeAuthMiddleware;
 
 /**
      * Class AuthController
@@ -19,6 +21,12 @@
      * @package App\Controllers
      */
     class AuthController extends Controller {
+
+        public function setAllMiddlewares()
+        {
+            $this->registerMiddlewares(new FreeAuthMiddleware(['/login']));
+            $this->registerMiddlewares(new AuthMiddleware(['/logout']));
+        }
 
         public function login(Request $request, Response $response)
         {

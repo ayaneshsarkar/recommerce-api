@@ -26,10 +26,13 @@
 
         public function execute()
         {
-            if(Application::isGuest()) {
-                if(in_array(Application::$APP->controller->action, $this->actions)
-                && Application::$APP->user->type !== 'admin') {
-                    throw new ForbiddenException();
+            if(Application::$APP->controller->action === Application::$APP->request->getURL()) {
+                if(in_array(Application::$APP->controller->action, $this->actions)) {
+                    if(!Application::isGuest() && Application::$APP->user->type !== 'admin') {
+                        throw new ForbiddenException();
+                    } else if (Application::isGuest()) {
+                        throw new ForbiddenException();
+                    }
                 }
             }
         }

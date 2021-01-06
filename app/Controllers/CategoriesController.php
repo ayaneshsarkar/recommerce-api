@@ -9,6 +9,7 @@
 
     use App\Controllers\Controller;
     use App\Core\Validator;
+    use App\Middlewares\AdminMiddleware;
 
     /**
      * Class CategoriesController
@@ -16,6 +17,13 @@
      * @package App
      */
     class CategoriesController extends Controller {
+
+        public function setAllMiddlewares()
+        {
+            $this->registerMiddlewares(new AdminMiddleware([
+                '/create-category', '/update-category', '/delete-category'
+            ]));
+        }
 
         public function getCategories()
         {

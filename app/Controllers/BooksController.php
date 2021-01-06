@@ -11,6 +11,7 @@
     use App\Core\Request;
     use App\Core\Response;
     use App\Core\Validator;
+    use App\Middlewares\AdminMiddleware;
     
 
     /**
@@ -19,6 +20,13 @@
      * @package App\Controllers
      */
     class BooksController extends Controller {
+
+        public function setAllMiddlewares()
+        {
+            $this->registerMiddlewares(new AdminMiddleware([
+                '/create-book', '/edit-book', '/delete-book'
+            ]));
+        }
 
         public function getBooks(Request $request, Response $response)
         {

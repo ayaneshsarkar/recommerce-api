@@ -43,6 +43,9 @@
             self::$DB = new Database();
 
             $this->getAuthHeader();
+
+            // echo self::$APP->accessToken . "\n";
+            // echo self::$APP->refreshToken . "\n";
         }
 
         public static function isGuest(): bool
@@ -87,7 +90,7 @@
             $headers = getallheaders();
             
             foreach($headers as $key => $value) {
-                if($key === 'authorization') {
+                if(strtolower($key) === 'authorization') {
                     $value = explode(' ', $value);
                     self::$APP->accessToken = $value[1] ?? null;
                     self::$APP->refreshToken = $value[2] ?? null;

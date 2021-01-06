@@ -26,8 +26,11 @@
 
         public function execute()
         {
-            if(!Application::isGuest()) {
-                throw new ForbiddenException();
+            if(Application::$APP->controller->action === Application::$APP->request->getURL()) {
+                if(in_array(Application::$APP->controller->action, $this->actions) && 
+                !Application::isGuest()) {
+                    throw new ForbiddenException();
+                }
             }
         }
 

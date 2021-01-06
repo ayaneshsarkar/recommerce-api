@@ -22,7 +22,7 @@
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
      * @package App
      */
-    class Controller {
+    abstract class Controller {
 
         public Database $Database;
         public \PDO $db;
@@ -47,20 +47,11 @@
             $this->category = new Category();
             $this->user = new User();
 
+            $this->registerMiddlewares(new TokenMiddleware());
             $this->setAllMiddlewares();
         }
 
-        protected function setAllMiddlewares()
-        {
-            $this->registerMiddlewares(new TokenMiddleware());
-            //$this->registerMiddlewares(new FreeAuthMiddleware(['register', 'login']));
-            //$this->registerMiddlewares(new AuthMiddleware(['updateUser']));
-            // $this->registerMiddlewares(new AdminMiddleware([
-            //     'storeBook', 'updateBook', 'deleteBook',
-            //     'storeCategory', 'updateCategory', 'deleteCategory',
-            //     'deleteUser'
-            // ]));
-        }
+        abstract public function setAllMiddlewares();
 
         protected function registerMiddlewares(Middleware $middleware)
         {

@@ -9,6 +9,9 @@
 
     use App\Controllers\Controller;
     use App\Core\Validator;
+    use App\Middlewares\AdminMiddleware;
+    use App\Middlewares\FreeAuthMiddleware;
+    use App\Middlewares\AuthMiddleware;
 
     /**
      * Class UsersController
@@ -16,6 +19,15 @@
      * @package App
      */
     class UsersController extends Controller {
+
+        public function setAllMiddlewares()
+        {
+            $this->registerMiddlewares(new FreeAuthMiddleware(['/register']));
+            $this->registerMiddlewares(new AuthMiddleware(['/update-user']));
+            $this->registerMiddlewares(new AdminMiddleware([
+                '/get-user', '/get-users', '/delete-user'
+            ]));
+        }
 
         public function getUsers()
         {
