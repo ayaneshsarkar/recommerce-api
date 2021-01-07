@@ -13,12 +13,17 @@
     use App\Controllers\CategoriesController;
     use App\Controllers\UsersController;
     use App\Controllers\AuthController;
+    use App\Controllers\HomeController;
 
     $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
 
     $app = new Application(dirname($_SERVER['DOCUMENT_ROOT']));
     $route = $app->route;
+
+    
+    // Home
+    $route->get('/', [HomeController::class, 'home']);
 
     // Books
     $route->get('/get-books', [BooksController::class, 'getBooks']);
