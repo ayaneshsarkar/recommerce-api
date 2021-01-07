@@ -43,9 +43,6 @@
             self::$DB = new Database();
 
             $this->getAuthHeader();
-
-            // echo self::$APP->accessToken . "\n";
-            // echo self::$APP->refreshToken . "\n";
         }
 
         public static function isGuest(): bool

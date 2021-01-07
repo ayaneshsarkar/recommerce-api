@@ -7,15 +7,12 @@
 
     namespace App\Controllers;
 
-    use App\Core\Database;
+    use App\Core\Application;
     use App\Models\Book;
     use App\Models\Category;
     use App\Models\User;
     use App\Middlewares\Middleware;
-    use App\Middlewares\AuthMiddleware;
     use App\Middlewares\TokenMiddleware;
-    use App\Middlewares\AdminMiddleware;
-    use App\Middlewares\FreeAuthMiddleware;
 
     /**
      * Class Controller
@@ -24,7 +21,6 @@
      */
     abstract class Controller {
 
-        public Database $Database;
         public \PDO $db;
 
         // Middleware Process
@@ -39,8 +35,7 @@
         public function __construct()
         {
             // Database Init
-            $this->Database = new Database();
-            $this->db = $this->Database->pdo;
+            $this->db = Application::$DB->pdo;
 
             // Models
             $this->book = new Book();

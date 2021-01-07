@@ -7,8 +7,7 @@
 
     namespace App\Models;
 
-    use App\Core\Database;
-    use PDO;
+    use App\Core\Application;
 
     /**
      * Class Model
@@ -17,14 +16,12 @@
      */
     class Model {
 
-        public Database $Database;
         public \PDO $db;
 
         public function __construct()
         {
             // Database Init
-            $this->Database = new Database();
-            $this->db = $this->Database->pdo;
+            $this->db = Application::$DB->pdo;
         }
 
     }

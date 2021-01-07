@@ -22,8 +22,8 @@
 
         public function setAllMiddlewares()
         {
-            $this->registerMiddlewares(new FreeAuthMiddleware(['/register']));
-            $this->registerMiddlewares(new AuthMiddleware(['/update-user']));
+            $this->registerMiddlewares(new FreeAuthMiddleware(['/register-user']));
+            $this->registerMiddlewares(new AuthMiddleware(['/edit-user']));
             $this->registerMiddlewares(new AdminMiddleware([
                 '/get-user', '/get-users', '/delete-user'
             ]));

@@ -21,7 +21,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AdminMiddleware([
-                '/create-category', '/update-category', '/delete-category'
+                '/create-category', '/edit-category', '/delete-category'
             ]));
         }
 
