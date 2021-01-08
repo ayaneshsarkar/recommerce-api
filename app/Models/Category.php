@@ -16,6 +16,16 @@
      */
     class Category extends Model {
 
+        public function primaryKey()
+        {
+            return 'id';
+        }
+
+        public function tableName()
+        {
+            return 'categories';
+        }
+
         public function get()
         {
             $query = "SELECT * FROM categories ORDER BY created_at DESC";

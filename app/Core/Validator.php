@@ -97,6 +97,31 @@
         }
 
         /**
+         * function isDrop
+         *
+         * @param mixed $compareArr
+         * @param mixed $compareValue
+         * @param object $data
+         * @param string $key
+         *
+         * @return void
+         */
+        public static function isDrop($compareArr, $compareValue, object $data, string $key)
+        {
+            $arr = [];
+            $compareArr = explode('|', $compareArr);
+            foreach($compareArr as $value) {
+                $arr[] = $data->{$value} ?? NULL;
+            }
+
+            if(!in_array($compareValue, $arr)) {
+                $errors[$key] = 'Invalid Data!';
+            } elseif(array_count_values($arr)[$compareValue] > 1) {
+                $errors[$key] = 'Invalid Data!';
+            }
+        }
+
+        /**
          * function validate
          *
          * @return array|null

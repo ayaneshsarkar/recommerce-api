@@ -11,6 +11,7 @@
     use App\Models\Book;
     use App\Models\Category;
     use App\Models\User;
+    use App\Models\Cart;
     use App\Middlewares\Middleware;
     use App\Middlewares\TokenMiddleware;
 
@@ -31,6 +32,7 @@
         public Book $book;
         public Category $category;
         public User $user;
+        public Cart $cart;
 
         public function __construct()
         {
@@ -41,6 +43,8 @@
             $this->book = new Book();
             $this->category = new Category();
             $this->user = new User();
+            $this->cart = new Cart();
+
 
             $this->registerMiddlewares(new TokenMiddleware());
             $this->setAllMiddlewares();

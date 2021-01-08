@@ -16,6 +16,16 @@
      */
     class User extends Model {
 
+        public function primaryKey()
+        {
+            return 'id';
+        }
+
+        public function tableName()
+        {
+            return 'users';
+        }
+
         public function getUser(object $data)
         {
             $query = "SELECT * FROM users WHERE email = :email";

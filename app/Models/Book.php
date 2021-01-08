@@ -13,6 +13,16 @@
      */
     class Book extends Model {
 
+        public function primaryKey()
+        {
+            return 'id';
+        }
+
+        public function tableName()
+        {
+            return 'books';
+        }
+
         public function get()
         {
             $query = "SELECT books.*, categories.name AS category FROM books

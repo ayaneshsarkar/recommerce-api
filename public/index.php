@@ -14,6 +14,7 @@
     use App\Controllers\UsersController;
     use App\Controllers\AuthController;
     use App\Controllers\HomeController;
+    use App\Controllers\CartsController;
 
     $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
@@ -55,6 +56,10 @@
     // Auth
     $route->post('/login', [AuthController::class, 'login']);
     $route->delete('/logout', [AuthController::class, 'logout']);
+
+    // Carts
+    $route->post('/cart', [CartsController::class, 'storeCart']);
+    $route->get('/test', [CartsController::class, 'test']);
 
 
     $app->run();
