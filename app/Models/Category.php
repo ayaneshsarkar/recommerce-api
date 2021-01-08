@@ -28,22 +28,14 @@
 
         public function get()
         {
-            $query = "SELECT * FROM categories ORDER BY created_at DESC";
-            $statement = $this->db->query($query);
-            $categories = $statement->fetchAll();
-
-            return $categories;
+            return $this->select()->orderBy('created_at', true)->getAll();
         }
 
         public function first(?int $id)
         {
             if($id) {
-                $query = "SELECT * FROM categories WHERE id = :id ORDER BY created_at DESC";
-                $statement = $this->db->prepare($query);
-                $statement->execute(['id' => $id]);
-                $category = $statement->fetch();
-
-                return $category;
+                return $this->select()->where('id', $id)->orderBy('created_at', true)
+                        ->getFirst();
             } else {
                 return NULL;
             }

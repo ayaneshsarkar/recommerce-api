@@ -25,25 +25,20 @@
 
         public function get()
         {
-            $query = "SELECT books.*, categories.name AS category FROM books
-                    JOIN categories ON books.category_id = categories.id 
-                    ORDER BY books.created_at DESC";
-            $books = $this->db->query($query)->fetchAll();
-            return $books;
+            return $this->select('books.*, categories.name AS category')
+                    ->join('categories', 'id', 'category_id')
+                    ->orderBy('created_at', true)
+                    ->getAll();
         }
 
         public function first(?int $id)
         {
             if($id) {
-                $query = "SELECT books.*, categories.name AS category FROM books
-                    JOIN categories ON books.category_id = categories.id
-                    WHERE books.id = :id
-                    ORDER BY books.created_at DESC";
-                $statement = $this->db->prepare($query);
-                $statement->execute([ 'id' => $id ]);
-                $book = $statement->fetch();
-
-                return $book;
+                return $this->select('books.*, categories.name AS category')
+                    ->join('categories', 'id', 'category_id')
+                    ->where('id', $id)
+                    ->orderBy('created_at', true)
+                    ->getFirst();
             } else {
                 return NULL;
             }
