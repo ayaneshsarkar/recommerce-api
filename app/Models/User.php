@@ -36,20 +36,13 @@
         }
 
         public function get() {
-            $query = "SELECT * FROM users ORDER BY created_at DESC";
-            $users = $this->db->query($query)->fetchAll();
-
-            return $users;
+            return $this->select()->orderBy('created_at', true)->getAll();
         }
 
         public function first(?int $id) {
             if($id) {
-                $query = "SELECT * FROM users WHERE id = :id ORDER BY created_at DESC";
-                $statement = $this->db->prepare($query);
-                $statement->execute(['id' => $id]);
-                $user = $statement->fetch();
-
-                return $user;
+                return $this->select()->where('id', $id)->orderBy('created_at', true)
+                        ->getFirst();
             } else {
                 return NULL;
             }
@@ -128,7 +121,11 @@
 
             $verification = password_verify($data->password, $user->password);
 
-            return (object)['auth' => TRUE, 'user' => $user];
+            if($verification) {
+                return (object)['auth' => TRUE, 'user' => $user];
+            } else {
+                return (object)['auth' => FALSE, 'user' => NULL];
+            }
         }
 
     }

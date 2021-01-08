@@ -34,14 +34,15 @@
          * function select
          *
          * @param string $selectQuery
-         *
+         * @param string $tableName
          * @return Model
          */
-        public function select(string $selectQuery = '')
+        public function select(string $selectQuery = '', string $tableName = '')
         {
             if($selectQuery !== '') $this->selectQuery = $selectQuery;
+            if(!$tableName) $tableName = $this->tableName();
             
-            $this->query = "SELECT " . $this->selectQuery . " FROM " . $this->tableName();
+            $this->query = "SELECT " . $this->selectQuery . " FROM $tableName";
 
             return $this;
         }
@@ -55,11 +56,12 @@
          *
          * @return Model
          */
-        public function join(string $foreignTable, string $foreignKey, string $tableKey = '')
+        public function join($foreignTable, $foreignKey, $tableKey = '', $tableName = '')
         {
             if(!$tableKey) $tableKey = $this->primaryKey();
+            if(!$tableName) $tableName = $this->tableName();
 
-            $this->query .= " JOIN $foreignTable ON " . $this->tableName() . ".$tableKey = $foreignTable.$foreignKey";
+            $this->query .= " JOIN $foreignTable ON $tableName.$tableKey = $foreignTable.$foreignKey";
 
             return $this;
         }
@@ -78,6 +80,15 @@
             if(!$tableName) $tableName = $this->tableName();
 
             $this->query .= " WHERE $tableName.$key = :$key";
+            $this->executeArray[$key] = $value;
+            return $this;
+        }
+
+        public function andWhere(string $key, $value, $tableName = '')
+        {
+            if(!$tableName) $tableName = $this->tableName();
+
+            $this->query .= " AND WHERE $tableName.$key = :$key";
             $this->executeArray[$key] = $value;
             return $this;
         }

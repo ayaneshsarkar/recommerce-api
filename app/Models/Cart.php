@@ -28,6 +28,20 @@
             return 'carts';
         }
 
+        public function checkCartByUser(?int $id)
+        {
+            return $this->select()->where('user_id', $id)->getFirst();
+        }
+
+        public function checkCartByBook(?int $bookId)
+        {
+            return $this->select('*', 'cart_items')
+                        ->join('carts', 'id', 'id', 'cart_items')
+                        ->where('book_id', $bookId, 'cart_items')
+                        ->andWhere('user_id', Application::$APP->user->id)
+                        ->getFirst();
+        }
+
         public function store()
         {
             return $this->insert([

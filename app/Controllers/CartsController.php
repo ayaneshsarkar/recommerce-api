@@ -8,7 +8,8 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
-    use App\Core\Request;
+use App\Core\Application;
+use App\Core\Request;
     use App\Core\Response;
     use App\Core\Validator;
     use App\Middlewares\AuthMiddleware;
@@ -27,6 +28,11 @@
             $this->registerMiddlewares(new AuthMiddleware(['/cart']));
         }
 
+        protected function updateCart()
+        {
+            
+        }
+
         public function storeCart(Request $request, Response $response)
         {
             $data = $request->getBody();
@@ -39,6 +45,13 @@
             $errors = Validator::validate();
 
             if(empty($errors)) {
+                $checkCartBook = $this->cart->checkCartByBook($data->book_id);
+
+                if(!empty($checkCartBook)) {
+                    // Update The Cart
+                }
+
+
                 $book = $this->book->first($data->book_id);
                 $cartId = $this->cart->store();
                 $this->cart->storeItems($cartId, $data, $book);
