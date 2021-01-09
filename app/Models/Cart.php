@@ -67,9 +67,12 @@
                 'description' => $book->description,
                 'author' => $book->author,
                 'bookurl' => $book->bookurl,
-                'hardcover_price' => $data->hardcover_price ? $book->hardcover_price : 0,
-                'paperback_price' => $data->paperback_price ? $book->paperback_price : 0,
-                'online_price' => $data->online_price ? $book->online_price : 0,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * ($data->quantity ?? 1) : 0,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * ($data->quantity ?? 1) : 0,
+                'online_price' => 
+                $data->online_price ? $book->online_price * ($data->quantity ?? 1) : 0,
                 'discount' => $data->discount ?? 0,
                 'publish_date' => $book->publish_date,
                 'category' => $book->category,
@@ -77,6 +80,31 @@
             ];
 
             return $this->insert($insertArr, 'cart_items');
+        }
+
+        public function updateItems(object $cartData, object $data, object $book): bool
+        {
+            $quantity = $cartData->quantity + ($data->quantity ?? 1);
+            echo $cartData->id; exit;
+
+            $updateData = [
+                'title' => $book->title,
+                'description' => $book->description,
+                'author' => $book->author,
+                'bookurl' => $book->bookurl,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * $quantity : 0,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * $quantity : 0,
+                'online_price' => 
+                $data->online_price ? $book->online_price * $quantity : 0,
+                'discount' => $data->discount ?? 0,
+                'publish_date' => $book->publish_date,
+                'category' => $book->category,
+                'quantity' => $quantity
+            ];
+
+            return $this->updateOne($updateData, $cartData->id, 'cart_items');
         }
 
     }

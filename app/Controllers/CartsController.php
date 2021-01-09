@@ -28,11 +28,6 @@ use App\Core\Request;
             $this->registerMiddlewares(new AuthMiddleware(['/cart']));
         }
 
-        protected function updateCart()
-        {
-            
-        }
-
         public function storeCart(Request $request, Response $response)
         {
             $data = $request->getBody();
@@ -47,17 +42,34 @@ use App\Core\Request;
             if(!empty($errors)) {
                 return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             } else {
+                $book = $this->book->first($data->book_id);
+
+                if(empty($book)) {
+                    return $response->json([ 'status' => FALSE, 'errors' => 'Invalid Book!' ]);
+                }
+
                 $checkCartBook = $this->cart->checkCartByBook($data->book_id);
 
                 if(!empty($checkCartBook)) {
-                    // Update The Cart
+                    echo $response->json((array)$checkCartBook); exit;
+                    
+                    $this->cart->updateItems($checkCartBook, $data, $book);
+
+                    return $response->json([
+                        'status' => TRUE,
+                        'errors' => NULL,
+                        'message' => 'Update Successfull!'
+                    ]); 
                 }
 
-                // $book = $this->book->first($data->book_id);
-                // $cartId = $this->cart->store();
-                // $this->cart->storeItems($cartId, $data, $book);
+                $cartId = $this->cart->store();
+                $this->cart->storeItems($cartId, $data, $book);
 
-                // return $response->json([ 'status' => TRUE, 'errors' => NULL ]); 
+                return $response->json([ 
+                    'status' => TRUE,
+                    'errors' => NULL,
+                    'message' => 'Insert Successfull!'
+                ]);
             }
         }
 

@@ -124,6 +124,7 @@
             $this->query .= " LIMIT 1";
             $statement = $this->db->prepare($this->query);
             $statement->execute($this->executeArray);
+            $this->executeArray = [];
 
             return $statement->fetch();
         }
@@ -138,6 +139,7 @@
             if(!empty($this->executeArray)) {
                 $statement = $this->db->prepare($this->query);
                 $statement->execute($this->executeArr);
+                $this->executeArray = [];
                 return $statement->fetchAll();
             } else {
                 return $this->db->query($this->query)->fetchAll();
@@ -176,5 +178,35 @@
             $statement->execute($executeArr);
     
             return $this->db->lastInsertId();
+        }
+
+        /**
+         * function updateOne
+         *
+         * @param array $data
+         * @param mixed $primaryValue
+         * @param string $table
+         * @param string $primaryKey
+         *
+         * @return boolean
+         */
+        public function updateOne($data, $primaryValue, $table = '', $primaryKey = NULL)
+        {
+            $executeArr = [];
+            if(!$table) $table = $this->tableName();
+            if(!$primaryKey) $primaryKey = $this->primaryKey();
+
+            $queryKeys = array_map(fn($key) => "$key = :$key", array_keys($data));
+            $queryKeys = implode(', ', $queryKeys);
+
+            $query = "UPDATE $table SET $queryKeys WHERE $primaryKey = :$primaryKey";
+            $executeArr[$primaryKey] = $primaryValue;
+
+            foreach($data as $key => $value) {
+                $executeArr[$key] = $value;
+            }
+
+            $statement = $this->db->prepare($query);
+            return $statement->execute($executeArr);
         }
     }
