@@ -25,7 +25,9 @@ use App\Core\Request;
 
         public function setAllMiddlewares()
         {
-            $this->registerMiddlewares(new AuthMiddleware(['/cart']));
+            $this->registerMiddlewares(new AuthMiddleware([
+                '/cart', '/delete-cart', '/clear-cart'
+            ]));
         }
 
         public function storeCart(Request $request, Response $response)
@@ -48,6 +50,7 @@ use App\Core\Request;
                     return $response->json([ 'status' => FALSE, 'errors' => 'Invalid Book!' ]);
                 }
 
+                $checkCartUser = $this->cart->checkCartByUser(Application::$APP->user->id);
                 $checkCartBook = $this->cart->checkCartByBook($data->book_id);
 
                 if(!empty($checkCartBook)) {                    
@@ -60,7 +63,12 @@ use App\Core\Request;
                     ]); 
                 }
 
-                $cartId = $this->cart->store();
+                if(empty($checkCartUser)) {
+                    $cartId = $this->cart->store();
+                } else {
+                    $cartId = $checkCartUser->id;
+                }
+
                 $this->cart->storeItems($cartId, $data, $book);
 
                 return $response->json([ 
@@ -69,6 +77,59 @@ use App\Core\Request;
                     'message' => 'Insert Successfull!'
                 ]);
             }
+        }
+
+        public function deleteCart(Request $request, Response $response)
+        {
+            $data = $request->getBody();
+
+            Validator::isInt($data->book_id ?? NULL, 'book', true);
+
+            $errors = Validator::validate();
+
+            if(!empty($errors)) {
+                return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
+            } else {
+                $checkCartBook = $this->cart->checkCartByBook($data->book_id);
+
+                if(empty($checkCartBook)) {
+                    return $response->json([
+                        'staus' => FALSE,
+                        'error' => 'Invalid Book!'
+                    ]);
+                }
+
+                // Delete Cart
+                $this->cart->deleteItem($checkCartBook->id);
+
+                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+            }
+        }
+
+        public function clearCart(Request $request, Response $response)
+        {
+            $cart = $this->cart->checkCartByUser(Application::$APP->user->id);
+
+            if(empty($cart)) {
+                return $response->json([ 
+                    'status' => FALSE, 
+                    'errors' => "You don't have anything in the cart!"
+                ]);
+            }
+
+            $books = $this->cart->checkCartByCartId($cart->id);
+
+            if(!empty($books)) {
+                $this->cart->deleteItems($cart->id);
+            }
+
+            $this->cart->deleteCart($cart->id);
+        
+            return $response->json([
+                'status' => TRUE,
+                'errors' => NULL,
+                'message' => 'Cart cleared for ' . Application::$APP->user->first_name . '.'
+            ]);
         }
 
         public function test()

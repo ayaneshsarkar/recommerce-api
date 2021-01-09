@@ -209,4 +209,25 @@
             $statement = $this->db->prepare($query);
             return $statement->execute($executeArr);
         }
+
+        /**
+         * function deleteOne
+         *
+         * @param string $key
+         * @param mixed $value
+         * @param string $tableName
+         *
+         * @return boolean
+         */
+        public function deleteOneOrMany(string $key, $value, string $tableName = ''): bool
+        {
+            if(!$tableName) $tableName = $this->tableName();
+            $executeArr = [];
+
+            $query = "DELETE FROM $tableName WHERE $key = :$key";
+            $executeArr[$key] = $value;
+
+            $statement = $this->db->prepare($query);
+            return $statement->execute($executeArr);
+        }
     }

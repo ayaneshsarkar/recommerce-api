@@ -28,9 +28,16 @@
             return 'carts';
         }
 
+        public function checkCartByCartId(int $id)
+        {
+            return $this->select('*', 'cart_items')->where('cart_id', $id, 'cart_items')
+                    ->orderBy('created_at', true, 'cart_items')
+                    ->getFirst();
+        }
+
         public function checkCartByUser(?int $id)
         {
-            return $this->select()->where('user_id', $id)->getFirst();
+            return $this->select()->where('user_id', $id)->orderBy('created_at')->getFirst();
         }
 
         public function checkCartByBook(?int $bookId)
@@ -104,6 +111,21 @@
             ];
 
             return $this->updateOne($updateData, $cartData->id, 'cart_items');
+        }
+
+        public function deleteItem(int $id)
+        {
+            return $this->deleteOneOrMany('id', $id, 'cart_items');
+        }
+
+        public function deleteItems(int $id)
+        {
+            return $this->deleteOneOrMany('cart_id', $id, 'cart_items');
+        }
+
+        public function deleteCart(int $id)
+        {
+            return $this->deleteOneOrMany('id', $id);
         }
 
     }

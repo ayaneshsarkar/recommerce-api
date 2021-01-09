@@ -59,6 +59,8 @@
 
     // Carts
     $route->post('/cart', [CartsController::class, 'storeCart']);
+    $route->delete('/delete-cart', [CartsController::class, 'deleteCart']);
+    $route->delete('/clear-cart', [CartsController::class, 'clearCart']);
     $route->get('/test', [CartsController::class, 'test']);
 
 
