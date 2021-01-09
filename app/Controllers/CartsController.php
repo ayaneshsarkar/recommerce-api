@@ -132,11 +132,4 @@ use App\Core\Request;
             ]);
         }
 
-        public function test()
-        {
-            header('Content-type: text/html');
-
-            return Helper::randomString(10);
-        }
-
     }

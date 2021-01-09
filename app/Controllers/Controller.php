@@ -14,6 +14,7 @@
     use App\Models\Cart;
     use App\Middlewares\Middleware;
     use App\Middlewares\TokenMiddleware;
+    use Stripe\Stripe;
 
     /**
      * Class Controller
@@ -48,6 +49,8 @@
 
             $this->registerMiddlewares(new TokenMiddleware());
             $this->setAllMiddlewares();
+
+            Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
         }
 
         abstract public function setAllMiddlewares();

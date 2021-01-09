@@ -15,6 +15,7 @@
     use App\Controllers\AuthController;
     use App\Controllers\HomeController;
     use App\Controllers\CartsController;
+    use App\Controllers\StripeController;
 
     $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
@@ -61,7 +62,8 @@
     $route->post('/cart', [CartsController::class, 'storeCart']);
     $route->delete('/delete-cart', [CartsController::class, 'deleteCart']);
     $route->delete('/clear-cart', [CartsController::class, 'clearCart']);
-    $route->get('/test', [CartsController::class, 'test']);
 
+    // Stripe
+    $route->get('/stripe', [StripeController::class, 'payment']);
 
     $app->run();
