@@ -50,9 +50,7 @@ use App\Core\Request;
 
                 $checkCartBook = $this->cart->checkCartByBook($data->book_id);
 
-                if(!empty($checkCartBook)) {
-                    echo $response->json((array)$checkCartBook); exit;
-                    
+                if(!empty($checkCartBook)) {                    
                     $this->cart->updateItems($checkCartBook, $data, $book);
 
                     return $response->json([

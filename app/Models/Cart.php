@@ -35,7 +35,7 @@
 
         public function checkCartByBook(?int $bookId)
         {
-            return $this->select('*', 'cart_items')
+            return $this->select('cart_items.*', 'cart_items')
                         ->join('carts', 'id', 'cart_id', 'cart_items')
                         ->where('book_id', $bookId, 'cart_items')
                         ->andWhere('user_id', Application::$APP->user->id)
@@ -85,8 +85,7 @@
         public function updateItems(object $cartData, object $data, object $book): bool
         {
             $quantity = $cartData->quantity + ($data->quantity ?? 1);
-            echo $cartData->id; exit;
-
+            
             $updateData = [
                 'title' => $book->title,
                 'description' => $book->description,
