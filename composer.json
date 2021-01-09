@@ -10,6 +10,7 @@
     "require": {
         "vlucas/phpdotenv": "^5.2",
         "firebase/php-jwt": "^5.2",
+        "stripe/stripe-php": "^7.67",
         "php": "^7.4"
     },
     "autoload": {
