@@ -39,26 +39,25 @@ use App\Core\Request;
 
             Validator::isInt($data->book_id ?? NULL, 'book', true);
             Validator::isOnlyInt($data->quantity ?? NULL, 'quantity');
-            Validator::isDrop('hardcover_price|paperback_price|online_price', true, $data, 'prices');
+            Validator::isDrop('hardcover_price|paperback_price|online_price', 1, $data, 'prices');
             Validator::isOnlyInt($data->discount ?? NULL, 'discount');
 
             $errors = Validator::validate();
 
-            if(empty($errors)) {
+            if(!empty($errors)) {
+                return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
+            } else {
                 $checkCartBook = $this->cart->checkCartByBook($data->book_id);
 
                 if(!empty($checkCartBook)) {
                     // Update The Cart
                 }
 
+                // $book = $this->book->first($data->book_id);
+                // $cartId = $this->cart->store();
+                // $this->cart->storeItems($cartId, $data, $book);
 
-                $book = $this->book->first($data->book_id);
-                $cartId = $this->cart->store();
-                $this->cart->storeItems($cartId, $data, $book);
-
-                return $response->json([ 'status' => TRUE, 'errors' => NULL ]); 
-            } else {
-                $response->json([ 'status' => FALSE, 'errors' => $errors ]);
+                // return $response->json([ 'status' => TRUE, 'errors' => NULL ]); 
             }
         }
 

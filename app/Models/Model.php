@@ -88,7 +88,7 @@
         {
             if(!$tableName) $tableName = $this->tableName();
 
-            $this->query .= " AND WHERE $tableName.$key = :$key";
+            $this->query .= " AND $tableName.$key = :$key";
             $this->executeArray[$key] = $value;
             return $this;
         }

@@ -36,7 +36,7 @@
         public function checkCartByBook(?int $bookId)
         {
             return $this->select('*', 'cart_items')
-                        ->join('carts', 'id', 'id', 'cart_items')
+                        ->join('carts', 'id', 'cart_id', 'cart_items')
                         ->where('book_id', $bookId, 'cart_items')
                         ->andWhere('user_id', Application::$APP->user->id)
                         ->getFirst();
@@ -67,9 +67,9 @@
                 'description' => $book->description,
                 'author' => $book->author,
                 'bookurl' => $book->bookurl,
-                'hardcover_price' => $data->hardcover_price ? $book->hardcover_price : NULL,
-                'paperback_price' => $data->paperback_price ? $book->paperback_price : NULL,
-                'online_price' => $data->online_price ? $book->online_price : NULL,
+                'hardcover_price' => $data->hardcover_price ? $book->hardcover_price : 0,
+                'paperback_price' => $data->paperback_price ? $book->paperback_price : 0,
+                'online_price' => $data->online_price ? $book->online_price : 0,
                 'discount' => $data->discount ?? 0,
                 'publish_date' => $book->publish_date,
                 'category' => $book->category,

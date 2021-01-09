@@ -73,7 +73,8 @@
 
             if($req && empty($value)) {
                 self::$errors[$key] = "The $key is required.";
-            } else if(!filter_var($value, FILTER_VALIDATE_INT) && !empty($value)) {
+            } else if(!filter_var($value, FILTER_VALIDATE_INT) && !empty($value) 
+            && !is_int($value)) {
                 self::$errors[$key] = "The $key has to be a number.";
             }
 
@@ -110,14 +111,15 @@
         {
             $arr = [];
             $compareArr = explode('|', $compareArr);
+            
             foreach($compareArr as $value) {
-                $arr[] = $data->{$value} ?? NULL;
+                array_push($arr, $data->{$value});
             }
 
             if(!in_array($compareValue, $arr)) {
-                $errors[$key] = 'Invalid Data!';
+                self::$errors[$key] = 'Invalid Data!';
             } elseif(array_count_values($arr)[$compareValue] > 1) {
-                $errors[$key] = 'Invalid Data!';
+                self::$errors[$key] = 'Invalid Data!';
             }
         }
 
