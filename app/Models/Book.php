@@ -25,8 +25,11 @@
 
         public function get()
         {
-            return $this->select('books.*, categories.name AS category')
+            return $this->select('books.*, categories.name AS category, 
+                        book_prices.hardcover_price, book_prices.paperback_price, 
+                        book_prices.online_price')
                     ->join('categories', 'id', 'category_id')
+                    ->join('book_prices', 'book_id', 'id')
                     ->orderBy('created_at', true)
                     ->getAll();
         }
@@ -34,8 +37,10 @@
         public function first(?int $id)
         {
             if($id) {
-                return $this->select('books.*, categories.name AS category')
+                return $this->select('books.*, categories.name AS category, book_prices.hardcover_price, book_prices.paperback_price, 
+                book_prices.online_price')
                     ->join('categories', 'id', 'category_id')
+                    ->join('book_prices', 'book_id', 'id')
                     ->where('id', $id)
                     ->orderBy('created_at', true)
                     ->getFirst();
@@ -48,11 +53,9 @@
         public function create(object $data)
         {
             $query = "INSERT INTO 
-                    books(category_id, title, description, author, bookurl, 
-                    hardcover_price, paperback_price, online_price, publish_date)
-                    
+                    books(category_id, title, description, author, bookurl, publish_date)
                     VALUES(:category_id, :title, :description, :author, :bookurl, 
-                    :hardcover_price, :paperback_price, :online_price, :publish_date)";
+                    :publish_date)";
             $statement = $this->db->prepare($query);
 
             $executeArr = [
@@ -61,6 +64,14 @@
                 'description'  => $data->description,
                 'author' => $data->author,
                 'bookurl' => $data->bookurl,
+                'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
+            ];
+
+            $statement->execute($executeArr);
+
+            $pricesArr = [
+                'book_id' => $this->db->lastInsertId(),
+
                 'hardcover_price' => 
                 empty($data->hardcover_price) ? NULL : $data->hardcover_price,
 
@@ -69,11 +80,10 @@
 
                 'online_price' => 
                 empty($data->online_price) ? NULL : $data->online_price,
-
-                'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $statement->execute($executeArr);
+            $this->insert($pricesArr, 'book_prices');
+
         }
 
         public function update(object $data)
