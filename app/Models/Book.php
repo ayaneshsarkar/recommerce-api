@@ -88,21 +88,16 @@
 
         public function update(object $data)
         {
-            $query = "UPDATE books 
-                SET category_id = :category_id, title = :title, description = :description, 
-                    author = :author, bookurl = :bookurl, hardcover_price = :hardcover_price, paperback_price = :paperback_price, online_price = :online_price, 
-                    publish_date = :publish_date
-                WHERE id = :id";
-            
-            $statement = $this->db->prepare($query);
-
-            $executeArr = [
-                'id' => $data->id,
+            $updateArr = [
                 'category_id' => $data->category_id,
                 'title' => $data->title,
                 'description'  => $data->description,
                 'author' => $data->author,
                 'bookurl' => $data->bookurl,
+                'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
+            ];
+
+            $pricesArr = [
                 'hardcover_price' => 
                 empty($data->hardcover_price) ? NULL : $data->hardcover_price,
 
@@ -111,11 +106,12 @@
 
                 'online_price' => 
                 empty($data->online_price) ? NULL : $data->online_price,
-
-                'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $statement->execute($executeArr);
+            $this->updateOne($updateArr, $data->id);
+            $this->updateOne($pricesArr, $data->id, 'book_prices', 'book_id');
+
+            return TRUE;
         }
 
         public function delete(?int $id)
