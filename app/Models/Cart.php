@@ -74,19 +74,25 @@
                 'description' => $book->description,
                 'author' => $book->author,
                 'bookurl' => $book->bookurl,
-                'hardcover_price' => 
-                $data->hardcover_price ? $book->hardcover_price * ($data->quantity ?? 1) : 0,
-                'paperback_price' => 
-                $data->paperback_price ? $book->paperback_price * ($data->quantity ?? 1) : 0,
-                'online_price' => 
-                $data->online_price ? $book->online_price * ($data->quantity ?? 1) : 0,
                 'discount' => $data->discount ?? 0,
                 'publish_date' => $book->publish_date,
                 'category' => $book->category,
                 'quantity' => $data->quantity ?? 1
             ];
 
-            return $this->insert($insertArr, 'cart_items');
+            $cartId = $this->insert($insertArr, 'cart_items');
+
+            $priceArr = [
+                'cart_item_id' => (int)$cartId,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * ($data->quantity ?? 1) : NULL,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * ($data->quantity ?? 1) : NULL,
+                'online_price' => 
+                $data->online_price ? $book->online_price * ($data->quantity ?? 1) : NULL
+            ];
+
+            return $this->insert($priceArr, 'cart_prices');
         }
 
         public function updateItems(object $cartData, object $data, object $book): bool
@@ -98,19 +104,25 @@
                 'description' => $book->description,
                 'author' => $book->author,
                 'bookurl' => $book->bookurl,
-                'hardcover_price' => 
-                $data->hardcover_price ? $book->hardcover_price * $quantity : 0,
-                'paperback_price' => 
-                $data->paperback_price ? $book->paperback_price * $quantity : 0,
-                'online_price' => 
-                $data->online_price ? $book->online_price * $quantity : 0,
                 'discount' => $data->discount ?? 0,
                 'publish_date' => $book->publish_date,
                 'category' => $book->category,
                 'quantity' => $quantity
             ];
 
-            return $this->updateOne($updateData, $cartData->id, 'cart_items');
+            $this->updateOne($updateData, $cartData->id, 'cart_items');
+
+            $priceArr = [
+                'cart_item_id' => $cartData->id,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * $quantity : 0,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * $quantity : 0,
+                'online_price' => 
+                $data->online_price ? $book->online_price * $quantity : 0
+            ];
+
+            return $this->updateOne($priceArr, $cartData->id, 'cart_prices', 'cart_item_id');
         }
 
         public function deleteItem(int $id)

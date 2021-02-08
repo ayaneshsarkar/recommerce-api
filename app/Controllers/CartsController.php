@@ -8,12 +8,11 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
-use App\Core\Application;
-use App\Core\Request;
+    use App\Core\Application;
+    use App\Core\Request;
     use App\Core\Response;
     use App\Core\Validator;
     use App\Middlewares\AuthMiddleware;
-    use App\Helpers\Helper;
 
 
     /**
@@ -53,14 +52,14 @@ use App\Core\Request;
                 $checkCartUser = $this->cart->checkCartByUser(Application::$APP->user->id);
                 $checkCartBook = $this->cart->checkCartByBook($data->book_id);
 
-                if(!empty($checkCartBook)) {                    
+                if(!empty($checkCartBook)) {
                     $this->cart->updateItems($checkCartBook, $data, $book);
 
                     return $response->json([
                         'status' => TRUE,
                         'errors' => NULL,
                         'message' => 'Update Successfull!'
-                    ]); 
+                    ]);
                 }
 
                 if(empty($checkCartUser)) {
@@ -71,7 +70,7 @@ use App\Core\Request;
 
                 $this->cart->storeItems($cartId, $data, $book);
 
-                return $response->json([ 
+                return $response->json([
                     'status' => TRUE,
                     'errors' => NULL,
                     'message' => 'Insert Successfull!'
