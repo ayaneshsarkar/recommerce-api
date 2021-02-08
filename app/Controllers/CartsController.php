@@ -25,8 +25,17 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AuthMiddleware([
-                '/cart', '/delete-cart', '/clear-cart'
+                '/cart', '/delete-cart', '/clear-cart', '/carts'
             ]));
+        }
+
+        public function getCarts(Request $request, Response $response)
+        {
+            return $response->json([
+                'status' => TRUE,
+                'errors' => NULL,
+                'carts' => $this->cart->allCarts(Application::$APP->user->id)
+            ]);
         }
 
         public function storeCart(Request $request, Response $response)

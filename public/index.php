@@ -59,6 +59,7 @@
     $route->delete('/logout', [AuthController::class, 'logout']);
 
     // Carts
+    $route->get('/carts', [CartsController::class, 'getCarts']);
     $route->post('/cart', [CartsController::class, 'storeCart']);
     $route->delete('/delete-cart', [CartsController::class, 'deleteCart']);
     $route->delete('/clear-cart', [CartsController::class, 'clearCart']);

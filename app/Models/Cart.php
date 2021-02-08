@@ -28,6 +28,36 @@
             return 'carts';
         }
 
+        public function allCarts(int $id)
+        {
+            $selectArray = [
+                'carts.*',
+                'cart_items.id as cartItemId',
+                'cart_items.title',
+                'cart_items.description',
+                'cart_items.author',
+                'cart_items.bookurl',
+                'cart_items.discount',
+                'cart_items.publish_date',
+                'cart_items.category',
+                'cart_items.quantity',
+                'cart_items.discount',
+                'cart_prices.hardcover_price',
+                'cart_prices.paperback_price',
+                'cart_prices.online_price',
+                'cart_items.created_at as cartItemCreated',
+                'cart_items.updated_at as cartItemUpdated'
+            ];
+
+            //var_dump(\implode(', ', $selectArray)); exit;
+
+            return $this->select(implode(', ', $selectArray), 'carts')
+                    ->join('cart_items', 'cart_id', 'id')
+                    ->join('cart_prices', 'cart_item_id', 'id', 'cart_items')
+                    ->where('user_id', $id)
+                    ->getAll();
+        }
+
         public function checkCartByCartId(int $id)
         {
             return $this->select('*', 'cart_items')->where('cart_id', $id, 'cart_items')

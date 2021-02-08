@@ -138,7 +138,10 @@
         {
             if(!empty($this->executeArray)) {
                 $statement = $this->db->prepare($this->query);
-                $statement->execute($this->executeArr);
+                foreach($this->executeArray as $key => $value) {
+                    $statement->bindParam(":$key", $value);
+                }
+                $statement->execute();
                 $this->executeArray = [];
                 return $statement->fetchAll();
             } else {
