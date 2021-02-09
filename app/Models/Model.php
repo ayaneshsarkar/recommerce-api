@@ -16,7 +16,7 @@
      */
     abstract class Model {
 
-        public \PDO $db;
+        public $db;
         public string $query = '';
         public string $selectQuery = '*';
         public array $executeArray = [];

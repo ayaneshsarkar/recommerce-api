@@ -28,6 +28,38 @@
             return 'carts';
         }
 
+        protected function insertItemPrices(int $itemId, object $data, object $book): string
+        {
+            $priceArr = [
+                'cart_item_id' => $itemId,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * ($data->quantity ?? 1) : NULL,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * ($data->quantity ?? 1) : NULL,
+                'online_price' => 
+                $data->online_price ? $book->online_price * ($data->quantity ?? 1) : NULL
+            ];
+
+            return $this->insert($priceArr, 'cart_prices');
+        }
+
+        protected function updateItemPrices(object $itemData, object $data, object $book): bool
+        {
+            $quantity = $itemData->quantity + ($data->quantity ?? 1);
+            
+            $priceArr = [
+                'cart_item_id' => $itemData->id,
+                'hardcover_price' => 
+                $data->hardcover_price ? $book->hardcover_price * $quantity : 0,
+                'paperback_price' => 
+                $data->paperback_price ? $book->paperback_price * $quantity : 0,
+                'online_price' => 
+                $data->online_price ? $book->online_price * $quantity : 0
+            ];
+
+            return $this->updateOne($priceArr, $itemData->id, 'cart_prices', 'cart_item_id');
+        }
+
         public function allCarts(int $id)
         {
             $selectArray = [
@@ -48,8 +80,6 @@
                 'cart_items.created_at as cartItemCreated',
                 'cart_items.updated_at as cartItemUpdated'
             ];
-
-            //var_dump(\implode(', ', $selectArray)); exit;
 
             return $this->select(implode(', ', $selectArray), 'carts')
                     ->join('cart_items', 'cart_id', 'id')
@@ -111,18 +141,7 @@
             ];
 
             $cartId = $this->insert($insertArr, 'cart_items');
-
-            $priceArr = [
-                'cart_item_id' => (int)$cartId,
-                'hardcover_price' => 
-                $data->hardcover_price ? $book->hardcover_price * ($data->quantity ?? 1) : NULL,
-                'paperback_price' => 
-                $data->paperback_price ? $book->paperback_price * ($data->quantity ?? 1) : NULL,
-                'online_price' => 
-                $data->online_price ? $book->online_price * ($data->quantity ?? 1) : NULL
-            ];
-
-            return $this->insert($priceArr, 'cart_prices');
+            return $this->insertItemPrices((int)$cartId, $data, $book);
         }
 
         public function updateItems(object $cartData, object $data, object $book): bool
@@ -142,17 +161,7 @@
 
             $this->updateOne($updateData, $cartData->id, 'cart_items');
 
-            $priceArr = [
-                'cart_item_id' => $cartData->id,
-                'hardcover_price' => 
-                $data->hardcover_price ? $book->hardcover_price * $quantity : 0,
-                'paperback_price' => 
-                $data->paperback_price ? $book->paperback_price * $quantity : 0,
-                'online_price' => 
-                $data->online_price ? $book->online_price * $quantity : 0
-            ];
-
-            return $this->updateOne($priceArr, $cartData->id, 'cart_prices', 'cart_item_id');
+            return $this->updateItemPrices($cartData, $data, $book);
         }
 
         public function deleteItem(int $id)

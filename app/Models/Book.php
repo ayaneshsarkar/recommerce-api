@@ -23,6 +23,40 @@
             return 'books';
         }
 
+        protected function insertBookPrice(int $bookId, object $data): string
+        {
+            $pricesArr = [
+                'book_id' => $bookId,
+
+                'hardcover_price' => 
+                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
+
+                'paperback_price' => 
+                empty($data->paperback_price) ? NULL : $data->paperback_price,
+
+                'online_price' => 
+                empty($data->online_price) ? NULL : $data->online_price,
+            ];
+
+            return $this->insert($pricesArr, 'book_prices');
+        }
+
+        protected function updateBookPrice(object $data): bool
+        {
+            $pricesArr = [
+                'hardcover_price' => 
+                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
+
+                'paperback_price' => 
+                empty($data->paperback_price) ? NULL : $data->paperback_price,
+
+                'online_price' => 
+                empty($data->online_price) ? NULL : $data->online_price
+            ];
+
+            return $this->updateOne($pricesArr, $data->id, 'book_prices', 'book_id');
+        }
+
         public function get()
         {
             return $this->select('books.*, categories.name AS category, 
@@ -52,13 +86,7 @@
 
         public function create(object $data)
         {
-            $query = "INSERT INTO 
-                    books(category_id, title, description, author, bookurl, publish_date)
-                    VALUES(:category_id, :title, :description, :author, :bookurl, 
-                    :publish_date)";
-            $statement = $this->db->prepare($query);
-
-            $executeArr = [
+            $bookArr = [
                 'category_id' => $data->category_id,
                 'title' => $data->title,
                 'description'  => $data->description,
@@ -67,23 +95,8 @@
                 'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $statement->execute($executeArr);
-
-            $pricesArr = [
-                'book_id' => $this->db->lastInsertId(),
-
-                'hardcover_price' => 
-                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
-
-                'paperback_price' => 
-                empty($data->paperback_price) ? NULL : $data->paperback_price,
-
-                'online_price' => 
-                empty($data->online_price) ? NULL : $data->online_price,
-            ];
-
-            $this->insert($pricesArr, 'book_prices');
-
+            $bookId = $this->insert($bookArr);
+            return $this->insertBookPrice((int)$bookId, $data);
         }
 
         public function update(object $data)
@@ -97,21 +110,8 @@
                 'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $pricesArr = [
-                'hardcover_price' => 
-                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
-
-                'paperback_price' => 
-                empty($data->paperback_price) ? NULL : $data->paperback_price,
-
-                'online_price' => 
-                empty($data->online_price) ? NULL : $data->online_price,
-            ];
-
             $this->updateOne($updateArr, $data->id);
-            $this->updateOne($pricesArr, $data->id, 'book_prices', 'book_id');
-
-            return TRUE;
+            return $this->updateBookPrice($data);
         }
 
         public function delete(?int $id)
