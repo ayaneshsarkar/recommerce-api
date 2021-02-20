@@ -24,7 +24,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AdminMiddleware([
-                '/create-book', '/edit-book', '/delete-book'
+                
             ]));
         }
 
@@ -36,7 +36,7 @@
         public function getBook(Request $request, Response $response)
         {
             $id = $request->getBody()->id ?? NULL;
-            return $response->json($this->book->first($id));
+            return $response->json($this->book->first((int)$id));
         }
 
         public function storeBook(Request $request, Response $response)
@@ -44,19 +44,18 @@
             $data = $request->getBody();
             Validator::isInt($data->category_id ?? NULL, 'category', true);
             Validator::isString($data->title ?? NULL, 'title', true);
-            Validator::isString($data->description ?? NULL, 'description', true);
+            Validator::isString($data->description ?? NULL, 'description', false);
             Validator::isString($data->author ?? NULL, 'author', true);
             Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
-            Validator::isOnlyInt($data->hardcover_price ?? NULL, 'hardcover price', false);
-            Validator::isOnlyInt($data->paperback_price ?? NULL, 'paperback price', false);
-            Validator::isOnlyInt($data->online_price ?? NULL, 'hardcover price', false);
+            Validator::isInt($data->price ?? NULL, 'price', true);
+            Validator::isInt($data->type_id ?? NULL, 'type', true);
             Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
             $errors = Validator::validate();
             
             if(empty($errors)) {
-                $this->book->create($data);
-                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+                $id = $this->book->create($data);
+                return $response->json([ 'status' => TRUE, 'errors' => NULL, 'id' => $id ]);
             } else {
                 return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             }
@@ -70,12 +69,11 @@
             Validator::isInt($data->id ?? NULL, 'id', true);
             Validator::isInt($data->category_id ?? NULL, 'category', true);
             Validator::isString($data->title ?? NULL, 'title', true);
-            Validator::isString($data->description ?? NULL, 'description', true);
+            Validator::isString($data->description ?? NULL, 'description', false);
             Validator::isString($data->author ?? NULL, 'author', true);
             Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
-            Validator::isOnlyInt($data->hardcover_price ?? NULL, 'hardcover price', false);
-            Validator::isOnlyInt($data->paperback_price ?? NULL, 'paperback price', false);
-            Validator::isOnlyInt($data->online_price ?? NULL, 'hardcover price', false);
+            Validator::isInt($data->type_id ?? NULL, 'type', true);
+            Validator::isInt($data->price ?? NULL, 'price', true);
             Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
             $errors = Validator::validate();

@@ -43,8 +43,7 @@
 
         public function create(object $data)
         {
-            $query = "INSERT INTO categories(name) VALUES(:name)";
-            $statement = $this->db->prepare($query)->execute([ 'name' => $data->name ]);
+            return $this->insert([ 'name' => $data->name ]);
         }
 
         public function update(object $data)
@@ -59,8 +58,7 @@
         public function delete(?int $id)
         {
             if($id) {
-                $query = "DELETE FROM categories WHERE id = :id";
-                $this->db->prepare($query)->execute([ 'id' => $id ]);
+                $this->deleteOneOrMany('id', $id);
             }
         }
 

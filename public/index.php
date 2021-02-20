@@ -16,6 +16,7 @@
     use App\Controllers\HomeController;
     use App\Controllers\CartsController;
     use App\Controllers\StripeController;
+    use App\Controllers\TypesController;
 
     $env = Dotenv::createImmutable(dirname(__DIR__));
     $env->load();
@@ -35,6 +36,9 @@
     $route->put('/edit-book', [BooksController::class, 'updateBook']);
     $route->get('/delete-book', [BooksController::class, 'deleteBook']);
     $route->delete('/delete-book', [BooksController::class, 'deleteBook']);
+
+    // Book Types
+    $route->get('/get-types', [TypesController::class, 'getTypes']);
 
     // Categories
     $route->get('/get-categories', [CategoriesController::class, 'getCategories']);

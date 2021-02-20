@@ -23,47 +23,11 @@
             return 'books';
         }
 
-        protected function insertBookPrice(int $bookId, object $data): string
-        {
-            $pricesArr = [
-                'book_id' => $bookId,
-
-                'hardcover_price' => 
-                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
-
-                'paperback_price' => 
-                empty($data->paperback_price) ? NULL : $data->paperback_price,
-
-                'online_price' => 
-                empty($data->online_price) ? NULL : $data->online_price,
-            ];
-
-            return $this->insert($pricesArr, 'book_prices');
-        }
-
-        protected function updateBookPrice(object $data): bool
-        {
-            $pricesArr = [
-                'hardcover_price' => 
-                empty($data->hardcover_price) ? NULL : $data->hardcover_price,
-
-                'paperback_price' => 
-                empty($data->paperback_price) ? NULL : $data->paperback_price,
-
-                'online_price' => 
-                empty($data->online_price) ? NULL : $data->online_price
-            ];
-
-            return $this->updateOne($pricesArr, $data->id, 'book_prices', 'book_id');
-        }
-
         public function get()
         {
-            return $this->select('books.*, categories.name AS category, 
-                        book_prices.hardcover_price, book_prices.paperback_price, 
-                        book_prices.online_price')
+            return $this->select('books.*, categories.name AS category, book_types.type')
                     ->join('categories', 'id', 'category_id')
-                    ->join('book_prices', 'book_id', 'id')
+                    ->join('book_types', 'id', 'type_id')
                     ->orderBy('created_at', true)
                     ->getAll();
         }
@@ -71,10 +35,9 @@
         public function first(?int $id)
         {
             if($id) {
-                return $this->select('books.*, categories.name AS category, book_prices.hardcover_price, book_prices.paperback_price, 
-                book_prices.online_price')
+                return $this->select('books.*, categories.name AS category, book_types.type')
                     ->join('categories', 'id', 'category_id')
-                    ->join('book_prices', 'book_id', 'id')
+                    ->join('book_types', 'id', 'type_id')
                     ->where('id', $id)
                     ->orderBy('created_at', true)
                     ->getFirst();
@@ -92,11 +55,12 @@
                 'description'  => $data->description,
                 'author' => $data->author,
                 'bookurl' => $data->bookurl,
+                'type_id' => $data->type_id,
+                'price' => $data->price,
                 'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $bookId = $this->insert($bookArr);
-            return $this->insertBookPrice((int)$bookId, $data);
+            return $this->insert($bookArr);
         }
 
         public function update(object $data)
@@ -107,11 +71,12 @@
                 'description'  => $data->description,
                 'author' => $data->author,
                 'bookurl' => $data->bookurl,
+                'type_id' => $data->type_id,
+                'price' => $data->price,
                 'publish_date' => date('Y-m-d H:i:s', strtotime($data->publish_date))
             ];
 
-            $this->updateOne($updateArr, $data->id);
-            return $this->updateBookPrice($data);
+            return $this->updateOne($updateArr, $data->id);
         }
 
         public function delete(?int $id)

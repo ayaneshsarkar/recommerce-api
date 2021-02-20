@@ -12,6 +12,7 @@
     use App\Models\Category;
     use App\Models\User;
     use App\Models\Cart;
+    use App\Models\Type;
     use App\Middlewares\Middleware;
     use App\Middlewares\TokenMiddleware;
     use Stripe\Stripe;
@@ -45,6 +46,7 @@
             $this->category = new Category();
             $this->user = new User();
             $this->cart = new Cart();
+            $this->type = new Type();
 
 
             $this->registerMiddlewares(new TokenMiddleware());

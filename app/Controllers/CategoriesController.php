@@ -21,7 +21,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AdminMiddleware([
-                '/create-category', '/edit-category', '/delete-category'
+                
             ]));
         }
 
@@ -45,8 +45,8 @@
             $errors = Validator::validate();
 
             if(empty($errors)) {
-                $this->category->create($data);
-                return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
+                $id = $this->category->create($data);
+                return json_encode([ 'status' => TRUE, 'errors' => NULL, 'id' => $id ]);
             } else {
                 return json_encode([ 'status' => FALSE, 'errors' => $errors ]);
             }
@@ -56,7 +56,7 @@
         {
             $data = json_decode(file_get_contents('php://input'));
 
-            Validator::isInt($data->id, 'id', true);
+            Validator::isInt((int)$data->id, 'id', true);
             Validator::isString($data->name, 'name', true);
 
             $errors = Validator::validate();
@@ -72,7 +72,8 @@
         public function deleteCategory()
         {
             $id = json_decode(file_get_contents('php://input'))->id ?? $_GET['id'] ?? NULL;
-            $this->category->delete($id);
+
+            $this->category->delete((int)$id);
 
             return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
         }
