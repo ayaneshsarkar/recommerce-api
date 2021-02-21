@@ -7,8 +7,9 @@
     namespace App\Controllers;
 
     use App\Controllers\Controller;
-use App\Core\Request;
-use App\Core\Response;
+    use App\Core\Request;
+    use App\Core\Response;
+    use App\Core\Application;
 
 /**
      * Class HomeController

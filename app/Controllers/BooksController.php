@@ -12,6 +12,7 @@
     use App\Core\Response;
     use App\Core\Validator;
     use App\Middlewares\AdminMiddleware;
+    use App\Core\FileHandler;
     
 
     /**
@@ -42,18 +43,26 @@
         public function storeBook(Request $request, Response $response)
         {
             $data = $request->getBody();
+            
             Validator::isInt($data->category_id ?? NULL, 'category', true);
             Validator::isString($data->title ?? NULL, 'title', true);
             Validator::isString($data->description ?? NULL, 'description', false);
             Validator::isString($data->author ?? NULL, 'author', true);
-            Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
             Validator::isInt($data->price ?? NULL, 'price', true);
             Validator::isInt($data->type_id ?? NULL, 'type', true);
             Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
+            if($request->hasFile('bookurl')) {
+                Validator::isImage($request->getFile('bookurl'), 'bookurl');
+            } else {
+                return 
+                $response->json([ 'status' => FALSE, 'errors' => 'Bookurl is required.' ]);
+            }
+
             $errors = Validator::validate();
             
             if(empty($errors)) {
+                $data->bookurl = FileHandler::moveFile($request->getFile('bookurl'));
                 $id = $this->book->create($data);
                 return $response->json([ 'status' => TRUE, 'errors' => NULL, 'id' => $id ]);
             } else {
@@ -90,9 +99,23 @@
         public function deleteBook(Request $request, Response $response)
         {
             $id = $request->getBody()->id ?? NULL;
-            $this->book->delete($id);
+            Validator::isInt($id, 'id', true);
 
-            return $response->json([ 'status' => true, 'errors' => NULL ]);
+            $errors = Validator::validate();
+
+            if(empty($errors)) {
+                $book = $this->book->first($id);
+
+                if(empty($book)) {
+                    return $response->json([ 'status' => false, 'errors' => 'Invalid Id!' ]);
+                }
+
+                FileHandler::deleteFile($book->bookurl);
+                $this->book->delete($id);
+                return $response->json([ 'status' => true, 'errors' => NULL ]);
+            } else {
+                return $response->json([ 'status' => false, 'errors' => $errors ]);
+            }
         }
 
     }

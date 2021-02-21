@@ -98,6 +98,28 @@
         }
 
         /**
+         * isImage function
+         *
+         * @param array $file
+         * @param string $key
+         *
+         * @return void
+         */
+        public static function isImage(array $file, $key)
+        {
+            $fileName = $file['name'];
+            $allowedExt = ["jpg", "jpeg", "jiff", "png"];
+
+            $fileNameArr = explode('.', $fileName);
+            $actualFileExt = end($fileNameArr);
+            $actualFileExt = strtolower($actualFileExt);
+            
+            if(!in_array($actualFileExt, $allowedExt)) {
+                self::$errors[$key] = "This $key has to be an Image";
+            }
+        }
+
+        /**
          * function isDrop
          *
          * @param mixed $compareArr
