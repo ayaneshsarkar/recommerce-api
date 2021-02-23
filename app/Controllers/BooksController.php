@@ -80,16 +80,35 @@
             Validator::isString($data->title ?? NULL, 'title', true);
             Validator::isString($data->description ?? NULL, 'description', false);
             Validator::isString($data->author ?? NULL, 'author', true);
-            Validator::isString($data->bookurl ?? NULL, 'bookURL', true);
             Validator::isInt($data->type_id ?? NULL, 'type', true);
             Validator::isInt($data->price ?? NULL, 'price', true);
             Validator::isString($data->publish_date ?? NULL, 'publish date', true);
 
             $errors = Validator::validate();
+
+            if($request->hasFile('bookurl')) {
+                Validator::isImage($request->getFile('bookurl'), 'bookurl');
+            }
             
             if(empty($errors)) {
-                $this->book->update($data);
-                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+                $book = $this->book->first($data->id);
+                
+                if(!empty($book)) {
+                    $bookurlFile = $request->getFile('bookurl');
+                    
+                    if($bookurlFile) {
+                        FileHandler::deleteFile($book->bookurl);
+                        $data->bookurl = FileHandler::moveFile($bookurlFile);
+                    } else {
+                        $data->bookurl = $book->bookurl;
+                    }
+
+                    $this->book->update($data);
+                    return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+                } else {
+                    return $response->json([ 'status' => TRUE, 'errors' => 'Invalid Id!' ]);
+                }
+
             } else {
                 return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             }

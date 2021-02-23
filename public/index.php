@@ -34,6 +34,7 @@
     $route->post('/get-book', [BooksController::class, 'getBook']);
     $route->post('/create-book', [BooksController::class, 'storeBook']);
     $route->put('/edit-book', [BooksController::class, 'updateBook']);
+    $route->post('/edit-book', [BooksController::class, 'updateBook']);
     $route->get('/delete-book', [BooksController::class, 'deleteBook']);
     $route->delete('/delete-book', [BooksController::class, 'deleteBook']);
 

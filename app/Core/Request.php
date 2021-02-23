@@ -58,7 +58,7 @@
             } else if(!empty($_GET)) {
                 $dataArr = $_GET;
             } else {
-                $dataArr = file_get_contents('php://input');
+                $dataArr = json_decode(file_get_contents('php://input'));
             }
             
             foreach($dataArr as $key => $value) {
