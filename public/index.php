@@ -62,6 +62,7 @@
     // Auth
     $route->post('/login', [AuthController::class, 'login']);
     $route->delete('/logout', [AuthController::class, 'logout']);
+    $route->post('/verify-user', [AuthController::class, 'verifyUser']);
 
     // Carts
     $route->get('/carts', [CartsController::class, 'getCarts']);

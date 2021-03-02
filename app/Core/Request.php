@@ -42,7 +42,7 @@
 
         public function hasFile(string $name)
         {
-            return $_FILES["$name"] ? true : false;
+            return $_FILES["$name"]["name"] ? true : false;
         }
 
         public function getFile(string $name) {

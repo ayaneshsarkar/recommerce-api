@@ -96,4 +96,14 @@
             }
         }
 
+        public function verifyUser(Request $request, Response $response) {
+            $user = Application::$APP->user;
+
+            if(!$user) {
+                return $response->json([ 'loggedIn' => false, 'user' => null ]);
+            }
+
+            return $response->json([ 'loggedIn' => true, 'user' => Application::$APP->user ]);
+        }
+
     }

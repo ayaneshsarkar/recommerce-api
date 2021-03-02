@@ -48,7 +48,7 @@
 
                 return $fileDestination . '/' . $newName;
             } else {
-                throw new FileException();
+                // throw new FileException();
             }
         }
 

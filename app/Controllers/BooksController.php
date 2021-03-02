@@ -94,7 +94,8 @@
                 $book = $this->book->first($data->id);
                 
                 if(!empty($book)) {
-                    $bookurlFile = $request->getFile('bookurl');
+                    $bookurlFile = $request->hasFile('bookurl') ?
+                                    $request->getFile('bookurl') : '';
                     
                     if($bookurlFile) {
                         FileHandler::deleteFile($book->bookurl);
@@ -104,7 +105,11 @@
                     }
 
                     $this->book->update($data);
-                    return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+                    return $response->json([ 
+                        'status' => TRUE, 
+                        'errors' => NULL, 
+                        'id' => $book->id 
+                    ]);
                 } else {
                     return $response->json([ 'status' => TRUE, 'errors' => 'Invalid Id!' ]);
                 }
