@@ -85,6 +85,7 @@
         public function getAuthHeader()
         {
             $headers = getallheaders();
+            // var_dump($headers); exit;
             
             foreach($headers as $key => $value) {
                 if(strtolower($key) === 'authorization') {

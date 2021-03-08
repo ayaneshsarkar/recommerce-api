@@ -108,7 +108,7 @@
         public static function isImage(array $file, $key)
         {
             $fileName = $file['name'];
-            $allowedExt = ["jpg", "jpeg", "jiff", "png"];
+            $allowedExt = ["jpg", "jpeg", "jfif", "png"];
 
             $fileNameArr = explode('.', $fileName);
             $actualFileExt = end($fileNameArr);

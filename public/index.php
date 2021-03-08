@@ -62,10 +62,13 @@
     // Auth
     $route->post('/login', [AuthController::class, 'login']);
     $route->delete('/logout', [AuthController::class, 'logout']);
+    $route->post('/logout', [AuthController::class, 'logout']);
     $route->post('/verify-user', [AuthController::class, 'verifyUser']);
 
     // Carts
     $route->get('/carts', [CartsController::class, 'getCarts']);
+    $route->get('/single-cart', [CartsController::class, 'getCart']);
+    $route->get('/cart-total', [CartsController::class, 'getTotal']);
     $route->post('/cart', [CartsController::class, 'storeCart']);
     $route->delete('/delete-cart', [CartsController::class, 'deleteCart']);
     $route->delete('/clear-cart', [CartsController::class, 'clearCart']);

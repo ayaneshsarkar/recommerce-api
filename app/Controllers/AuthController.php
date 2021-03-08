@@ -64,16 +64,22 @@
                         'errors' => NULL,
                         'message' => 'Logged In!',
                         'access_token' => $tokens->accessToken,
-                        'refresh_token' => $tokens->refreshToken
+                        'refresh_token' => $tokens->refreshToken,
+                        'user' => Application::$APP->user
                     ]);
                 } else {
                     return $response->json([
                         'status' => FALSE,
-                        'errors' => 'Invalid Credentials!'
+                        'errors' => 'Invalid Credentials!',
+                        'user' => null
                     ]);
                 }
             } else {
-                return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
+                return $response->json([ 
+                    'status' => FALSE, 
+                    'errors' => $errors, 
+                    'user' => null 
+                ]);
             }
 
 

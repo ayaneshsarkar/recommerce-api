@@ -37,7 +37,8 @@
         public function getBook(Request $request, Response $response)
         {
             $id = $request->getBody()->id ?? NULL;
-            return $response->json($this->book->first((int)$id));
+            $slug = $request->getBody()->slug ?? NULL;
+            return $response->json($this->book->first((int)$id, $slug));
         }
 
         public function storeBook(Request $request, Response $response)

@@ -48,6 +48,23 @@
         }
 
         /**
+         * sum function
+         *
+         * @param string $columnName
+         * @param string $tableName
+         *
+         * @return Model
+         */
+        public function sum(string $columnName, string $tableName)
+        {
+            if(!$tableName) $tableName = $this->tableName();
+
+            $this->query = "SELECT SUM($tableName.$columnName)" . " FROM $tableName";
+
+            return $this;
+        }
+
+        /**
          * function join
          *
          * @param string $foreignTable
@@ -125,7 +142,6 @@
             $statement = $this->db->prepare($this->query);
             $statement->execute($this->executeArray);
             $this->executeArray = [];
-
             return $statement->fetch();
         }
 

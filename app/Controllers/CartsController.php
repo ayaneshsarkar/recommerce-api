@@ -25,7 +25,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AuthMiddleware([
-                '/cart', '/delete-cart', '/clear-cart', '/carts'
+                '/cart', '/delete-cart', '/clear-cart', '/carts', '/cart-total'
             ]));
         }
 
@@ -38,13 +38,37 @@
             ]);
         }
 
+        public function getCart(Request $request, Response $response)
+        {
+            $data = $request->getBody();
+            $cartItemId = $data->cartitemid ?? NULL;
+
+            if(!$cartItemId) $response->json(['status' => FALSE, 'errors' => 'No Info Given!']);
+
+            return $response->json([
+                'status' => TRUE,
+                'errors' => NULL,
+                'carts' => $this->cart->singleCart(Application::$APP->user->id, (int)$cartItemId)
+            ]);
+        }
+
+        public function getTotal(Request $request, Response $response)
+        {
+            $cartTotal = $this->cart->cartTotal();
+            
+            return $response->json([
+                'status' => TRUE,
+                'errors' => NULL,
+                'total' => $cartTotal->sum ?? 0
+            ]);
+        }
+
         public function storeCart(Request $request, Response $response)
         {
             $data = $request->getBody();
 
             Validator::isInt($data->book_id ?? NULL, 'book', true);
             Validator::isOnlyInt($data->quantity ?? NULL, 'quantity');
-            Validator::isDrop('hardcover_price|paperback_price|online_price', 1, $data, 'prices');
             Validator::isOnlyInt($data->discount ?? NULL, 'discount');
 
             $errors = Validator::validate();
@@ -67,6 +91,7 @@
                     return $response->json([
                         'status' => TRUE,
                         'errors' => NULL,
+                        'cartitemid' => $checkCartBook->id,
                         'message' => 'Update Successfull!'
                     ]);
                 }
@@ -77,11 +102,12 @@
                     $cartId = $checkCartUser->id;
                 }
 
-                $this->cart->storeItems($cartId, $data, $book);
+                $cartItemId = $this->cart->storeItems($cartId, $data, $book);
 
                 return $response->json([
                     'status' => TRUE,
                     'errors' => NULL,
+                    'cartitemid' => $cartItemId,
                     'message' => 'Insert Successfull!'
                 ]);
             }
@@ -98,7 +124,7 @@
             if(!empty($errors)) {
                 return $response->json([ 'status' => FALSE, 'errors' => $errors ]);
             } else {
-                $checkCartBook = $this->cart->checkCartByBook($data->book_id);
+                $checkCartBook = $this->cart->checkCartByBook((int)$data->book_id);
 
                 if(empty($checkCartBook)) {
                     return $response->json([
@@ -110,7 +136,11 @@
                 // Delete Cart
                 $this->cart->deleteItem($checkCartBook->id);
 
-                return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+                return $response->json([ 
+                    'status' => TRUE, 
+                    'errors' => NULL, 
+                    'cartitemid' => $checkCartBook->id
+                ]);
             }
         }
 
