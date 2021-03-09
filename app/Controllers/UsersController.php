@@ -87,30 +87,30 @@
             }
         }
 
-        public function updateUser()
+        public function updateUser(Request $request, Response $response)
         {
-            $data = json_decode(file_get_contents('php://input'));
+            $data = $request->getBody();
 
-            Validator::isInt($data->id, 'id', true);
-            Validator::isString($data->first_name, 'first name', true);
-            Validator::isString($data->last_name, 'last name', true);
-            Validator::isEmail($data->email, 'email', true);
-            Validator::isString($data->avatar, 'avatar', true);
-            Validator::isString($data->address, 'address', true);
-            Validator::isString($data->city, 'city', true);
-            Validator::isString($data->state, 'state', true);
-            Validator::isString($data->country, 'country', true);
-            Validator::isString($data->date_of_birth, 'date of birth', true);
-            Validator::isString($data->token, 'token', false);
-            Validator::isString($data->type, 'type', false);
+            Validator::isInt($data->id ?? NULL, 'id', true);
+            Validator::isString($data->first_name ?? NULL, 'first name', true);
+            Validator::isString($data->last_name ?? NULL, 'last name', true);
+            Validator::isEmail($data->email ?? NULL, 'email', true);
+            Validator::isString($data->avatar ?? NULL, 'avatar', true);
+            Validator::isString($data->address ?? NULL, 'address', true);
+            Validator::isString($data->city ?? NULL, 'city', true);
+            Validator::isString($data->state ?? NULL, 'state', true);
+            Validator::isString($data->country ?? NULL, 'country', true);
+            Validator::isString($data->date_of_birth ?? NULL, 'date of birth', true);
+            Validator::isString($data->token ?? NULL, 'token', false);
+            Validator::isString($data->type ?? NULL, 'type', false);
 
             $errors = Validator::validate();
 
             if(empty($errors)) {
                 $checkMail = $this->user->checkMail($data->email);
 
-                if(!empty($checkMail) && $checkMail->id === $data->id) {
-                    $this->user->update($data);
+                if(!empty($checkMail)) {
+                    $this->user->update($data, $checkMail);
                     return json_encode([ 'status' => TRUE, 'errors' => NULL ]);
                 } else {
                     return json_encode([ 'status' => FALSE, 'errors' => 'Invalid Email!' ]);

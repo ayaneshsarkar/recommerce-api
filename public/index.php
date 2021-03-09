@@ -75,5 +75,8 @@
 
     // Stripe
     $route->get('/stripe', [StripeController::class, 'payment']);
+    $route->get('/create-order', [StripeController::class, 'storeOrder']);
 
     $app->run();
+
+    

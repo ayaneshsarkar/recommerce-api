@@ -59,7 +59,7 @@
             return $response->json([
                 'status' => TRUE,
                 'errors' => NULL,
-                'total' => $cartTotal->sum ?? 0
+                'total' => $cartTotal
             ]);
         }
 

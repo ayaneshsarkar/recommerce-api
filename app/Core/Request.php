@@ -12,6 +12,8 @@
      * @author Ayanesh Sarkar <ayaneshsarkar101@gmail.com>
      * @package App\Core
      */
+
+    use App\Exceptions\ForbiddenException;
     class Request {
 
         public function getMethod()
@@ -60,6 +62,11 @@
             } else {
                 $dataArr = json_decode(file_get_contents('php://input'));
             }
+
+            // if(\is_null($dataArr)) {
+            //     $data = [];
+            //     return (object)$data;
+            // }
             
             foreach($dataArr as $key => $value) {
                 if(is_int($value)) {

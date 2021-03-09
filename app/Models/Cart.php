@@ -30,10 +30,20 @@
 
         public function cartTotal()
         {
-            return $this->sum('price', 'cart_items')
+            $total = 0;
+
+            $items = $this->select('*', 'cart_items')
                     ->join('carts', 'id', 'cart_id', 'cart_items')
                     ->where('user_id', Application::$APP->user->id)
-                    ->getFirst();
+                    ->getAll();
+
+            if(!empty($items)) {
+                foreach($items as $item) {
+                    $total += ($item->price * $item->quantity);
+                }
+            }
+
+            return $total;
         }
 
         public function allCarts(int $id)

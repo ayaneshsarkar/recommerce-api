@@ -78,7 +78,7 @@
             ]);
         }
 
-        public function update(object $data)
+        public function update(object $data, object $user)
         {
             $query = 
                 "UPDATE users SET 
@@ -98,7 +98,7 @@
                 'state' => $data->state,
                 'country' => $data->country,
                 'date_of_birth' => $data->date_of_birth,
-                'token' => $data->token ?? NULL,
+                'token' => $user->token,
                 'type' => $data->type ?? NULL
             ]);
         }
