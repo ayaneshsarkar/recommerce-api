@@ -35,14 +35,22 @@
          *
          * @param string $selectQuery
          * @param string $tableName
+         * @param bool $distinctColumn
          * @return Model
          */
-        public function select(string $selectQuery = '', string $tableName = '')
+        public function select(
+            string $selectQuery = '', 
+            string $tableName = '', 
+            bool $distinctColumn = false)
         {
             if($selectQuery !== '') $this->selectQuery = $selectQuery;
             if(!$tableName) $tableName = $this->tableName();
-            
-            $this->query = "SELECT " . $this->selectQuery . " FROM $tableName";
+
+            if($distinctColumn) {
+                $this->query = "SELECT DISTINCT ON " . $this->selectQuery . " FROM $tableName";
+            } else {
+                $this->query = "SELECT " . $this->selectQuery . " FROM $tableName";
+            }
 
             return $this;
         }
@@ -127,6 +135,37 @@
             } else {
                 $this->query .= " ORDER BY $tableName.$column";
             }
+
+            return $this;
+        }
+
+        /**
+         * groupBy function
+         *
+         * @param string $column
+         * @param string $tableName
+         *
+         * @return Model
+         */
+        public function groupBy(string $column, $tableName = '')
+        {
+            if($tableName === '') $tableName = $this->tableName();
+            
+            $this->query .= " GROUP BY $tableName.$column";
+
+            return $this;
+        }
+
+        /**
+         * groupByPostgres function
+         *
+         * @param string $columns
+         *
+         * @return Model
+         */
+        public function groupByPostgres(string $columns)
+        {
+            $this->query .= " GROUP BY $columns";
 
             return $this;
         }

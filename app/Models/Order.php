@@ -45,7 +45,9 @@
                 'transaction_id' => $data->transactionId,
                 'status' => $data->status,
                 'invoice_id' => Helper::randomString(12),
-                'paid_amount' => $amount
+                'paid_amount' => $amount,
+                'order_code' => 
+                \date('Y-m-d', \strtotime(\time())) . '-' . Helper::randomString(50)
             ]);
         }
 
@@ -73,6 +75,7 @@
             $selectArray = [
                 'orders.*',
                 'order_items.id as orderitemid',
+                'order_items.order_id',
                 'order_items.title',
                 'order_items.description',
                 'order_items.author',
@@ -90,6 +93,15 @@
             return $this->select(implode(', ', $selectArray))
                     ->join('order_items', 'order_id')
                     ->where('user_id', Application::$APP->user->id)
+                    // ->groupByPostgres('orders.id', 'order_items.id')
+                    ->getAll();
+        }
+
+        public function getOrderBooks()
+        {
+            return $this->select('(book_code) order_items.*, orders.user_id', 'order_items', true)
+                    ->join('orders', 'id', 'order_id', 'order_items')
+                    ->where('user_id', Application::$APP->user->id, 'orders')
                     ->getAll();
         }
 

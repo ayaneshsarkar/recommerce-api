@@ -27,7 +27,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AuthMiddleware([
-                '/stripe', '/create-order', '/get-orders', '/get-order'
+                '/stripe', '/create-order', '/get-orders', '/get-order', 'get-order-books'
             ]));
         }
 
@@ -135,6 +135,17 @@
             $order = $this->order->getOrder((int)$orderId);
 
             return $response->json([ 'status' => TRUE, 'errors' => NULL, 'order' => $order ]);
+        }
+
+        public function getOrderBooks(Request $request, Response $response)
+        {
+            $books = $this->order->getOrderBooks();
+
+            return $response->json([
+                'status' => TRUE,
+                'errors' => NULL,
+                'books' => $books
+            ]);
         }
 
     }

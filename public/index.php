@@ -78,5 +78,6 @@
     $route->post('/create-order', [StripeController::class, 'storeOrder']);
     $route->get('/get-orders', [StripeController::class, 'getOrders']);
     $route->get('/get-order', [StripeController::class, 'getOrder']);
+    $route->get('/get-order-books', [StripeController::class, 'getOrderBooks']);
 
     $app->run();
