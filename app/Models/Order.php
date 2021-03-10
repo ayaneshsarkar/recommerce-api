@@ -68,4 +68,12 @@
             }
         }
 
+        public function getOrders()
+        {
+            return $this->select('orders.*', 'order_items.*', 'order_items.id as orderitemid')
+                    ->join('order_items', 'order_id')
+                    ->where('user_id', Application::$APP->user->id)
+                    ->getAll();
+        }
+
     }

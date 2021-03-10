@@ -26,7 +26,9 @@
 
         public function setAllMiddlewares()
         {
-            $this->registerMiddlewares(new AuthMiddleware(['/stripe', '/create-order']));
+            $this->registerMiddlewares(new AuthMiddleware([
+                '/stripe', '/create-order', '/get-orders'
+            ]));
         }
 
         public function payment(Request $request, Response $response)
@@ -105,6 +107,13 @@
             $this->order->createOrderItems($orderId, $cartItems);
 
             return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+        }
+
+        public function getOrders(Request $request, Response $response)
+        {
+            $orders = $this->order->getOrders();
+
+            return $response->json([ 'status' => TRUE, 'errors' => NULL, 'orders' => $orders ]);
         }
 
     }
