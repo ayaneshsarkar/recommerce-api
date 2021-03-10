@@ -27,7 +27,7 @@
         public function setAllMiddlewares()
         {
             $this->registerMiddlewares(new AuthMiddleware([
-                '/stripe', '/create-order', '/get-orders'
+                '/stripe', '/create-order', '/get-orders', '/get-order'
             ]));
         }
 
@@ -58,6 +58,7 @@
         {
             $data = $request->getBody();
             $amount = $this->cart->cartTotal();
+            $userId = Application::$APP->user->id;
 
             Validator::isString($data->transactionId ?? NULL, 'transaction id', true);
             Validator::isString($data->status ?? NULL , 'status', true);
@@ -69,44 +70,56 @@
             }
 
             $cartItems = $this->cart->allCarts(Application::$APP->user->id);
+            $cartId = null;
 
             if(empty($cartItems)) {
                 return $response->json([ 'status' => TRUE, 'errors' => 'Empty Cart!' ]);
             }
 
-            if(Application::$APP->user->avatar) {
-                FileHandler::makeDir('orders/' . Application::$APP->user->id);
-                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/avatars');
-                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/bookimages');
-                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/invoices');
-
-                $imageName = explode('/', Application::$APP->user->avatar);
-                $imageName = $imageName[1];
-
-                FileHandler::copyFile(
-                    Application::$APP->user->avatar, 
-                    'orders/' . Application::$APP->user->id  . "/avatars/$imageName"
-                );
-            }
+            FileHandler::makeDir('orders/' . $userId);
 
             // Store Order
             $orderId = $this->order->createOrder(Application::$APP->user, $data, $amount);
+
+            FileHandler::makeDir('orders/'.$userId."/$orderId");
+            FileHandler::makeDir('orders/'.$userId."/$orderId/avatars");
+            FileHandler::makeDir('orders/'.$userId."/$orderId/bookimages");
+            FileHandler::makeDir('orders/'.$userId."/$orderId/invoices");
+
+            if(Application::$APP->user->avatar) {
+                $imageName = Application::$APP->user->avatar;
+
+                FileHandler::copyFile(
+                    Application::$APP->user->avatar, 
+                    'orders/' . $userId  . "/$orderId/$imageName"
+                );
+            }
+
             // Store Order Items
             foreach($cartItems as $item) {
+                $cartId = $item->id;
+
                 if($item->bookurl) {
-                    $imageName = explode('/', Application::$APP->user->avatar);
-                    $imageName = $imageName[1];
+                    $imageName = $item->bookurl;
 
                     FileHandler::copyFile(
                         $item->bookurl,
-                        'orders/' . Application::$APP->user->id . "/bookimages/$imageName"
+                        'orders/'.$userId."/$orderId/$imageName"
                     );
                 }
             }
 
             $this->order->createOrderItems($orderId, $cartItems);
+            
+            // Clear Cart
+            $this->cart->deleteCart($cartId);
+            
 
-            return $response->json([ 'status' => TRUE, 'errors' => NULL ]);
+            return $response->json([ 
+                'status' => TRUE, 
+                'errors' => NULL, 
+                'orderId' => $orderId 
+            ]);
         }
 
         public function getOrders(Request $request, Response $response)
@@ -114,6 +127,14 @@
             $orders = $this->order->getOrders();
 
             return $response->json([ 'status' => TRUE, 'errors' => NULL, 'orders' => $orders ]);
+        }
+
+        public function getOrder(Request $request, Response $response)
+        {
+            $orderId = $request->getBody()->id;
+            $order = $this->order->getOrder((int)$orderId);
+
+            return $response->json([ 'status' => TRUE, 'errors' => NULL, 'order' => $order ]);
         }
 
     }

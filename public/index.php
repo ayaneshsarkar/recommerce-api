@@ -77,5 +77,6 @@
     $route->get('/stripe', [StripeController::class, 'payment']);
     $route->post('/create-order', [StripeController::class, 'storeOrder']);
     $route->get('/get-orders', [StripeController::class, 'getOrders']);
+    $route->get('/get-order', [StripeController::class, 'getOrder']);
 
     $app->run();

@@ -49,7 +49,7 @@
             ]);
         }
 
-        public function createOrderItems(int $orderId, object $items)
+        public function createOrderItems(int $orderId, array $items)
         {
             foreach($items as $item) {
                 $this->insert([
@@ -70,10 +70,53 @@
 
         public function getOrders()
         {
-            return $this->select('orders.*', 'order_items.*', 'order_items.id as orderitemid')
+            $selectArray = [
+                'orders.*',
+                'order_items.id as orderitemid',
+                'order_items.title',
+                'order_items.description',
+                'order_items.author',
+                'order_items.bookurl',
+                'order_items.book_code',
+                'order_items.publish_date',
+                'order_items.category',
+                'order_items.quantity',
+                'order_items.price',
+                'order_items.type',
+                'order_items.created_at as orderItemCreated',
+                'order_items.updated_at as orderItemUpdated'
+            ];
+
+            return $this->select(implode(', ', $selectArray))
                     ->join('order_items', 'order_id')
                     ->where('user_id', Application::$APP->user->id)
                     ->getAll();
+        }
+
+        public function getOrder(int $orderId)
+        {
+            $selectArray = [
+                'orders.*',
+                'order_items.id as orderitemid',
+                'order_items.title',
+                'order_items.description',
+                'order_items.author',
+                'order_items.bookurl',
+                'order_items.book_code',
+                'order_items.publish_date',
+                'order_items.category',
+                'order_items.quantity',
+                'order_items.price',
+                'order_items.type',
+                'order_items.created_at as orderItemCreated',
+                'order_items.updated_at as orderItemUpdated'
+            ];
+
+            return $this->select(implode(', ', $selectArray))
+                    ->join('order_items', 'order_id')
+                    ->where('id', $orderId)
+                    ->andWhere('user_id', Application::$APP->user->id)
+                    ->getFirst();
         }
 
     }
