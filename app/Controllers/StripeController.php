@@ -12,6 +12,7 @@
     use App\Core\Response;
     use App\Middlewares\AuthMiddleware;
     use App\Core\Validator;
+    use App\Core\FileHandler;
     use Error;
     use Stripe\PaymentIntent;
     use Stripe\Stripe;
@@ -25,7 +26,7 @@
 
         public function setAllMiddlewares()
         {
-            $this->registerMiddlewares(new AuthMiddleware(['/stripe']));
+            $this->registerMiddlewares(new AuthMiddleware(['/stripe', '/create-order']));
         }
 
         public function payment(Request $request, Response $response)
@@ -72,26 +73,15 @@
             }
 
             if(Application::$APP->user->avatar) {
-                if(!is_dir(Application::$APP->user->id)) {
-                    mkdir('orders/' . Application::$APP->user->id);
-
-                    if(!is_dir('orders/' . Application::$APP->user->id . '/avatars')) {
-                        mkdir('orders/' . Application::$APP->user->id . '/avatars');
-                    }
-
-                    if(!is_dir('orders/' . Application::$APP->user->id . '/bookimages')) {
-                        mkdir('orders/' . Application::$APP->user->id . '/bookimages');
-                    }
-
-                    if(!is_dir('orders/' . Application::$APP->user->id . '/invoices')) {
-                        mkdir('orders/' . Application::$APP->user->id . '/invoices');
-                    }
-                }
+                FileHandler::makeDir('orders/' . Application::$APP->user->id);
+                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/avatars');
+                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/bookimages');
+                FileHandler::makeDir('orders/' . Application::$APP->user->id . '/invoices');
 
                 $imageName = explode('/', Application::$APP->user->avatar);
                 $imageName = $imageName[1];
 
-                copy(
+                FileHandler::copyFile(
                     Application::$APP->user->avatar, 
                     'orders/' . Application::$APP->user->id  . "/avatars/$imageName"
                 );
@@ -104,7 +94,8 @@
                 if($item->bookurl) {
                     $imageName = explode('/', Application::$APP->user->avatar);
                     $imageName = $imageName[1];
-                    copy(
+
+                    FileHandler::copyFile(
                         $item->bookurl,
                         'orders/' . Application::$APP->user->id . "/bookimages/$imageName"
                     );

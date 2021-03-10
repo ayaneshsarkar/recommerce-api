@@ -52,11 +52,46 @@
             }
         }
 
+        /**
+         * deleteFile function
+         *
+         * @param string $path
+         *
+         * @return void
+         */
         public static function deleteFile(string $path)
         {
             if(\file_exists("$path")) {
                 \unlink("$path");
             }
+        }
+
+        /**
+         * makeDir function
+         *
+         * @param string $path
+         * @param integer $mode
+         *
+         * @return void
+         */
+        public static function makeDir(string $path, $mode = 0777)
+        {
+            if(!\is_dir($path)) {
+                \mkdir($path, $mode);
+            }
+        }
+
+        /**
+         * copyFile function
+         *
+         * @param string $sourceDes
+         * @param string $toDes
+         *
+         * @return void
+         */
+        public static function copyFile(string $sourceDes, string $toDes)
+        {
+            copy($sourceDes, $toDes);
         }
 
     }
